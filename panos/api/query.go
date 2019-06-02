@@ -6,6 +6,7 @@ import (
 	"github.com/adamb/panfw-util/panos/errors"
 	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
 /*
@@ -33,6 +34,22 @@ func (q *QueryBase) SetPath(path string) {
 func (q *QueryBase) SetFqdn(fqdn string) {
 	q.Fqdn = fqdn
 }
+func (q *QueryBase) EnableAuth(apikey string) {
+	q.Params["key"] = apikey
+}
+
+func (q *QueryBase) Setup() *http.Request {
+	req, err := http.NewRequest("GET", fmt.Sprintf("https://%v%v", q.Fqdn, q.Path), nil)
+	errors.DieIf(err)
+
+	// Setup the full url
+	u := req.URL.Query()
+	for k, v := range q.Params {
+		u.Add(k, v)
+	}
+	req.URL.RawQuery = u.Encode()
+	return req
+}
 
 /*
 Simple GET query type
@@ -49,15 +66,35 @@ func NewParamQuery() *ParamQuery {
 }
 
 func (q *ParamQuery) Send() []byte {
-	req, err := http.NewRequest("GET", fmt.Sprintf("https://%v%v", q.Fqdn, q.Path), nil)
-	errors.DieIf(err)
+	req := q.Setup()
 
-	// Setup the full url
-	u := req.URL.Query()
-	for k, v := range q.Params {
-		u.Add(k, v)
-	}
-	req.URL.RawQuery = u.Encode()
+	errors.LogDebug(req.URL.String())
+	return SendHttpReq(req)
+}
+
+/*
+Query containing an Xpath param
+*/
+type XpathQuery struct {
+	QueryBase
+	Xpath []string
+}
+
+func NewXpathQuery() *XpathQuery {
+	xpq := XpathQuery{}
+	xpq.Params = make(map[string]string)
+	return &xpq
+}
+
+func (q *XpathQuery) SetXpath(xps []string) {
+	q.Xpath = xps
+}
+
+func (q *XpathQuery) Send() []byte {
+	xpath := MakeXPath(q.Xpath)
+	q.AddParam("xpath", xpath)
+
+	req := q.Setup()
 
 	errors.LogDebug(req.URL.String())
 	return SendHttpReq(req)
@@ -81,4 +118,10 @@ func SendHttpReq(req *http.Request) []byte {
 	errors.DieIf(err)
 
 	return body
+}
+
+// Takes a list of string seps and converts to Xpath
+// Not perfect but good enough for interacting with PAN.
+func MakeXPath(path []string) string {
+	return fmt.Sprintf("%v", strings.Join(path, "/"))
 }

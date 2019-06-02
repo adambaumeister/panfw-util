@@ -7,6 +7,7 @@ import (
 	"github.com/adamb/panfw-util/panos/errors"
 )
 
+// Generate an API key for the given user.
 func KeyGen(user string, pass string, fqdn string) string {
 
 	kgq := api.NewParamQuery()

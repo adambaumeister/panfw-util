@@ -18,3 +18,8 @@ with username "admin" and password "admin" (the default).
 func TestConnect(t *testing.T) {
 	Connect(USER_DEFAULT, PASS_DEFAULT, TESTING_IP_DEFAULT)
 }
+
+func TestFirewall_Rules(t *testing.T) {
+	fw := Connect(USER_DEFAULT, PASS_DEFAULT, TESTING_IP_DEFAULT)
+	fw.Rules()
+}
