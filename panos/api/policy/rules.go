@@ -4,11 +4,11 @@ import (
 	"encoding/xml"
 	"fmt"
 	"github.com/adamb/panfw-util/panos/api"
+	"github.com/adamb/panfw-util/panos/errors"
 )
 
-// GetRules retrieves the rulebase
-// This call is only valid on firewalls, Panorama requires setting a devicegroup
-func GetRules(fqdn string, apikey string, xpath []string) {
+// GetRules retrieves a list of rules, present at xpath
+func GetRules(fqdn string, apikey string, xpath []string) []Rule {
 	rq := api.NewXpathQuery()
 	rq.EnableAuth(apikey)
 
@@ -20,7 +20,12 @@ func GetRules(fqdn string, apikey string, xpath []string) {
 	r := RuleResponse{}
 	resp := rq.Send()
 	xml.Unmarshal(resp, &r)
-	fmt.Printf("Source: %v\n", r.Result.Rules.Entries[0].Name)
+
+	if len(r.Result.Rules.Entries) == 0 {
+		errors.LogDebug(fmt.Sprintf("Rulebase query at %v returned zero entries.", api.MakeXPath(xpath)))
+	}
+
+	return r.Result.Rules.Entries
 }
 
 type RuleResponse struct {
@@ -37,6 +42,21 @@ type Rules struct {
 }
 
 type Rule struct {
-	Name   string `xml:"name,attr"`
-	Source string `xml:"source"`
+	Name        string        `xml:"name,attr"`
+	To          []MemberField `xml:"to"`
+	From        []MemberField `xml:"From"`
+	Source      []MemberField `xml:"source"`
+	Destination []MemberField `xml:"destination"`
+	SourceUser  []MemberField `xml:"source-user"`
+	Category    []MemberField `xml:"category"`
+	Application []MemberField `xml:"application"`
+	Service     []MemberField `xml:"service"`
+	HipProfiles []MemberField `xml:"hip-profiles"`
+	Action      string        `xml:"action"`
+	LogStart    string        `xml:"log-start"`
+	LogEnd      string        `xml:"log-end"`
+}
+
+type MemberField struct {
+	Member string `xml:"member"`
 }
