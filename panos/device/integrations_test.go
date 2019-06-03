@@ -26,5 +26,5 @@ func _TestFirewall_Rules(t *testing.T) {
 
 func TestLoad(t *testing.T) {
 	fw := Connect(USER_DEFAULT, PASS_DEFAULT, TESTING_IP_DEFAULT)
-	fw.Load("panvm.xml")
+	fw.ImportNamed("panvm.xml")
 }
