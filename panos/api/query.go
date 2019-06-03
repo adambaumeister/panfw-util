@@ -3,6 +3,7 @@ package api
 import (
 	"bytes"
 	"crypto/tls"
+	"encoding/xml"
 	"fmt"
 	"github.com/adamb/panfw-util/panos/errors"
 	"io"
@@ -162,6 +163,30 @@ func (q *Post) Send() []byte {
 	req := q.SetupPost(q.Body)
 	fmt.Printf("%v\n", req.Header.Get("Content-Type"))
 	errors.LogDebug(req.URL.String())
+	return SendHttpReq(req)
+}
+
+type Cmd struct {
+	QueryBase
+	Command interface{}
+}
+
+func NewCmd(command interface{}) *Cmd {
+	c := Cmd{
+		Command: command,
+	}
+	c.Params = make(map[string]string)
+	c.Headers = make(map[string]string)
+	return &c
+}
+
+func (c *Cmd) Send() []byte {
+	cmdxml, err := xml.Marshal(c.Command)
+	errors.DieIf(err)
+	c.AddParam("cmd", string(cmdxml))
+	errors.LogDebug(string(cmdxml))
+
+	req := c.Setup()
 	return SendHttpReq(req)
 }
 

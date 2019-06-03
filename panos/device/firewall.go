@@ -3,6 +3,7 @@ package device
 import (
 	"fmt"
 	"github.com/adamb/panfw-util/panos/api/auth"
+	"github.com/adamb/panfw-util/panos/api/deviceconfig"
 	"github.com/adamb/panfw-util/panos/api/policy"
 )
 
@@ -47,4 +48,8 @@ func (fw *Firewall) Rules() {
 	}
 
 	policy.GetRules(fw.Fqdn, fw.Apikey, xps)
+}
+
+func (fw *Firewall) Commit() {
+	deviceconfig.Commit(fw.Fqdn, fw.Apikey)
 }

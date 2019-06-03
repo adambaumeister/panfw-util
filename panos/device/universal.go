@@ -21,7 +21,7 @@ func (fw *Universal) ImportNamed(fn string) {
 
 		Files are imported as the name as they appear on disk
 	*/
-	r := deviceconfig.Load(fw.Fqdn, fw.Apikey, fn, false)
+	r := deviceconfig.ImportNamed(fw.Fqdn, fw.Apikey, fn, false)
 	fmt.Printf("Import complete!\n")
 	r.Print()
 }

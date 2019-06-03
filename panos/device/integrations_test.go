@@ -24,7 +24,12 @@ func _TestFirewall_Rules(t *testing.T) {
 	fw.Rules()
 }
 
-func TestLoad(t *testing.T) {
+func _TestLoad(t *testing.T) {
 	fw := Connect(USER_DEFAULT, PASS_DEFAULT, TESTING_IP_DEFAULT)
 	fw.ImportNamed("panvm.xml")
+}
+
+func TestCommit(t *testing.T) {
+	fw := Connect(USER_DEFAULT, PASS_DEFAULT, TESTING_IP_DEFAULT)
+	fw.Commit()
 }
