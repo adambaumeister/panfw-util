@@ -25,3 +25,7 @@ func (fw *Universal) ImportNamed(fn string) {
 	fmt.Printf("Import complete!\n")
 	r.Print()
 }
+
+func (fw *Universal) LoadNamed(fn string) {
+	deviceconfig.LoadNamedConfig(fw.Fqdn, fw.Apikey, fn)
+}
