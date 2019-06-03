@@ -15,11 +15,16 @@ These tests rely on a PANOS device (firewall) to be accessible at PANOS_IP (defa
 with username "admin" and password "admin" (the default).
 */
 
-func TestConnect(t *testing.T) {
+func _TestConnect(t *testing.T) {
 	Connect(USER_DEFAULT, PASS_DEFAULT, TESTING_IP_DEFAULT)
 }
 
-func TestFirewall_Rules(t *testing.T) {
+func _TestFirewall_Rules(t *testing.T) {
 	fw := Connect(USER_DEFAULT, PASS_DEFAULT, TESTING_IP_DEFAULT)
 	fw.Rules()
+}
+
+func TestLoad(t *testing.T) {
+	fw := Connect(USER_DEFAULT, PASS_DEFAULT, TESTING_IP_DEFAULT)
+	fw.Load("panvm.xml")
 }

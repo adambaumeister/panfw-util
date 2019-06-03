@@ -16,6 +16,6 @@ These tests rely on a PANOS device (firewall) to be accessible at PANOS_IP (defa
 with username "admin" and password "admin" (the default).
 */
 
-func TestKeyGen(t *testing.T) {
+func _TestKeyGen(t *testing.T) {
 	auth.KeyGen(USER_DEFAULT, PASS_DEFAULT, TESTING_IP_DEFAULT)
 }
