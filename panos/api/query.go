@@ -5,7 +5,7 @@ import (
 	"crypto/tls"
 	"encoding/xml"
 	"fmt"
-	"github.com/adamb/panfw-util/panos/errors"
+	"github.com/adambaumeister/panfw-util/panos/errors"
 	"io"
 	"io/ioutil"
 	"mime/multipart"

@@ -3,8 +3,8 @@ package auth
 import (
 	"encoding/xml"
 	"fmt"
-	"github.com/adamb/panfw-util/panos/api"
-	"github.com/adamb/panfw-util/panos/errors"
+	"github.com/adambaumeister/panfw-util/panos/api"
+	"github.com/adambaumeister/panfw-util/panos/errors"
 	"log"
 )
 

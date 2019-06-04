@@ -2,9 +2,9 @@ package device
 
 import (
 	"fmt"
-	"github.com/adamb/panfw-util/panos/api/auth"
-	"github.com/adamb/panfw-util/panos/api/deviceconfig"
-	"github.com/adamb/panfw-util/panos/api/policy"
+	"github.com/adambaumeister/panfw-util/panos/api/auth"
+	"github.com/adambaumeister/panfw-util/panos/api/deviceconfig"
+	"github.com/adambaumeister/panfw-util/panos/api/policy"
 )
 
 const DEVICE_XPATH = "/config/devices"

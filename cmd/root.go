@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/adamb/panfw-util/panos/errors"
+	"github.com/adambaumeister/panfw-util/panos/errors"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"

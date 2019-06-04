@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"github.com/adamb/panfw-util/panos/device"
-	"github.com/adamb/panfw-util/panos/errors"
+	"github.com/adambaumeister/panfw-util/panos/device"
+	"github.com/adambaumeister/panfw-util/panos/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"os"

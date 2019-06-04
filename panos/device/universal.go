@@ -2,7 +2,7 @@ package device
 
 import (
 	"fmt"
-	"github.com/adamb/panfw-util/panos/api/deviceconfig"
+	"github.com/adambaumeister/panfw-util/panos/api/deviceconfig"
 )
 
 /*
