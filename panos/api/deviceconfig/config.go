@@ -6,6 +6,7 @@ import (
 	"github.com/adamb/panfw-util/panos/api"
 	"github.com/adamb/panfw-util/panos/errors"
 	"strings"
+	"time"
 )
 
 func ImportNamed(fqdn string, apikey string, fn string, commit bool) *MsgResponse {
@@ -41,6 +42,11 @@ func (m *MsgResponse) Print() {
 }
 
 func Commit(fqdn string, apikey string) {
+	/*
+		Commits the current configuration.
+
+		This func waits for the commit to succeed before returning by polling the job id.
+	*/
 	c := CommitCommand{
 		XMLName: xml.Name{Local: "commit"},
 	}
@@ -61,11 +67,18 @@ func Commit(fqdn string, apikey string) {
 		errors.LogDebug(r.Msg)
 		return
 	}
-
-	ShowJob(fqdn, apikey, r.Job)
+	job := ShowJob(fqdn, apikey, r.Job)
+	for job.Status == "ACT" {
+		errors.LogDebug(fmt.Sprintf("Commit progress: %v\n", job.Progress))
+		job = ShowJob(fqdn, apikey, r.Job)
+		time.Sleep(2 * time.Second)
+	}
 }
 
-func ShowJob(fqdn string, apikey string, jobid int) {
+func ShowJob(fqdn string, apikey string, jobid int) Job {
+	/*
+		Retrieve a JOB with id <jobid> on the system, returning a Job object.
+	*/
 	cmd := showJobs{
 		XMLName: xml.Name{Local: "show"},
 		Id:      jobid,
@@ -79,12 +92,24 @@ func ShowJob(fqdn string, apikey string, jobid int) {
 	q.AddParam("type", "op")
 	resp := q.Send()
 	errors.LogDebug(string(resp))
+
+	r := ShowJobResponse{}
+	xml.Unmarshal(resp, &r)
+
+	return r.Job
 }
 
+// Response received from commit or other messages that enqueue a job
 type MsgJobResponse struct {
 	api.Response
 	Msg string `xml:"msg"`
 	Job int    `xml:"result>job"`
+}
+
+// Representation of a show jobs id <blah>
+type ShowJobResponse struct {
+	api.Response
+	Job Job `xml:"result>job"`
 }
 
 type CommitCommand struct {
@@ -94,6 +119,23 @@ type CommitCommand struct {
 type showJobs struct {
 	XMLName xml.Name
 	Id      int `xml:"jobs>id"`
+}
+
+/*
+PANOS "Job" API Object -> Returned from the output of certain show commands
+*/
+type Job struct {
+	StartTime string `xml:"tenq"`
+	EndTime   string `xml:"tdeq"`
+	Id        int    `xml:"id"`
+	User      string `xml:"user"`
+	Type      string `xml:"type"`
+	Status    string `xml:"status"`
+	Queued    string `xml:"queued"`
+	Stoppable string `xml:"stoppable"`
+	Progress  string `xml:"progress"`
+	Warnings  string `xml:"warnings"`
+	Details   string `xml:"details"`
 }
 
 func LoadNamedConfig(fqdn string, apikey string, cn string) {
