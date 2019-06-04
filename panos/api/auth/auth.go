@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/adamb/panfw-util/panos/api"
 	"github.com/adamb/panfw-util/panos/errors"
+	"log"
 )
 
 // Generate an API key for the given user.
@@ -21,6 +22,10 @@ func KeyGen(user string, pass string, fqdn string) string {
 
 	v := KeyGenResponse{}
 	xml.Unmarshal(resp, &v)
+	if v.Status == "error" {
+		fmt.Printf("%v\n", string(resp))
+		log.Fatal("Authentication failed.")
+	}
 	errors.LogDebug(fmt.Sprintf("Query status: %v, Key: %v\n", v.Status, v.Result.Key))
 
 	return v.Result.Key

@@ -21,11 +21,12 @@ func (fw *Universal) ImportNamed(fn string) {
 
 		Files are imported as the name as they appear on disk
 	*/
-	r := deviceconfig.ImportNamed(fw.Fqdn, fw.Apikey, fn, false)
+	r := deviceconfig.ImportNamed(fw.Fqdn, fw.Apikey, fn)
 	fmt.Printf("Import complete!\n")
 	r.Print()
+	return
 }
 
-func (fw *Universal) LoadNamed(fn string) {
-	deviceconfig.LoadNamedConfig(fw.Fqdn, fw.Apikey, fn)
+func (fw *Universal) LoadNamed(fn string, commit bool) {
+	deviceconfig.LoadNamedConfig(fw.Fqdn, fw.Apikey, fn, commit)
 }

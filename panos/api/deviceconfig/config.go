@@ -5,11 +5,12 @@ import (
 	"fmt"
 	"github.com/adamb/panfw-util/panos/api"
 	"github.com/adamb/panfw-util/panos/errors"
+	"log"
 	"strings"
 	"time"
 )
 
-func ImportNamed(fqdn string, apikey string, fn string, commit bool) *MsgResponse {
+func ImportNamed(fqdn string, apikey string, fn string) *MsgResponse {
 	/*
 		Imports a named configuration snapshot off the local disk
 	*/
@@ -67,6 +68,7 @@ func Commit(fqdn string, apikey string) {
 		errors.LogDebug(r.Msg)
 		return
 	}
+
 	job := ShowJob(fqdn, apikey, r.Job)
 	for job.Status == "ACT" {
 		errors.LogDebug(fmt.Sprintf("Commit progress: %v\n", job.Progress))
@@ -138,7 +140,7 @@ type Job struct {
 	Details   string `xml:"details"`
 }
 
-func LoadNamedConfig(fqdn string, apikey string, cn string) {
+func LoadNamedConfig(fqdn string, apikey string, cn string, commit bool) {
 	c := LoadNamedCommand{
 		XMLName: xml.Name{Local: "load"},
 		Config:  cn,
@@ -152,6 +154,18 @@ func LoadNamedConfig(fqdn string, apikey string, cn string) {
 
 	resp := q.Send()
 	errors.LogDebug(string(resp))
+
+	r := MsgResponse{}
+	xml.Unmarshal(resp, &r)
+	// If the configuration is loaded, PAN device responds with 200 and status=success
+	if r.Status == "success" {
+		if commit {
+			Commit(fqdn, apikey)
+		}
+	} else {
+		r.Print()
+		log.Fatal("Config import failed!\n")
+	}
 }
 
 type LoadNamedCommand struct {
