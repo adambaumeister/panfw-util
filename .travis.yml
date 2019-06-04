@@ -10,3 +10,15 @@ branches:
   only:
   - master
   - /^v.*/
+
+after_success:
+  - GOOS=windows GOARCH=amd64 ; go build -o panutil.exe
+
+deploy:
+  provider: releases
+  api_key: $api_token
+  files:
+    - panutil.exe
+  skip_cleanup: true
+  on:
+    tags: true
