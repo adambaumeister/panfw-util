@@ -21,12 +21,17 @@ func (fw *Universal) ImportNamed(fn string) {
 
 		Files are imported as the name as they appear on disk
 	*/
+	fmt.Printf("Importing named configuration file %v...", fn)
 	r := deviceconfig.ImportNamed(fw.Fqdn, fw.Apikey, fn)
-	fmt.Printf("Import complete!\n")
-	r.Print()
+	if r.Status == "success" {
+		fmt.Printf("Done!\n")
+	} else {
+		fmt.Printf("Failed!\n")
+	}
 	return
 }
 
 func (fw *Universal) LoadNamed(fn string, commit bool) {
+	fmt.Printf("Loading named configuration file %v...\n", fn)
 	deviceconfig.LoadNamedConfig(fw.Fqdn, fw.Apikey, fn, commit)
 }

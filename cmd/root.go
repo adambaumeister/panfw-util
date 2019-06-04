@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/adamb/panfw-util/panos/errors"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -40,6 +41,7 @@ func init() {
 	cobra.OnInitialize(initConfig)
 	// Root flags
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.cobra.yaml)")
+	rootCmd.PersistentFlags().BoolVar(&errors.DEBUG, "debug", false, "Enable verbose debugging.")
 	rootCmd.PersistentFlags().StringVar(&username, "username", "", "Login Username")
 	rootCmd.PersistentFlags().StringVar(&password, "password", "", "Login Password")
 	rootCmd.PersistentFlags().StringVar(&hostname, "hostname", "", "PANOS device hostname")

@@ -161,7 +161,6 @@ func NewPost(data io.Reader) *Post {
 
 func (q *Post) Send() []byte {
 	req := q.SetupPost(q.Body)
-	fmt.Printf("%v\n", req.Header.Get("Content-Type"))
 	errors.LogDebug(req.URL.String())
 	return SendHttpReq(req)
 }

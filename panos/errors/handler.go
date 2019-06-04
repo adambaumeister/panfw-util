@@ -4,6 +4,8 @@ import (
 	"log"
 )
 
+var DEBUG = false
+
 func DieIf(err error) {
 	if err != nil {
 		log.Fatal(err)
@@ -11,5 +13,7 @@ func DieIf(err error) {
 }
 
 func LogDebug(s string) {
-	log.Printf("%v", s)
+	if DEBUG {
+		log.Printf("%v", s)
+	}
 }

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/adamb/panfw-util/panos/api"
 	"github.com/adamb/panfw-util/panos/errors"
+	"github.com/schollz/progressbar"
 	"log"
 	"strings"
 	"time"
@@ -70,11 +71,13 @@ func Commit(fqdn string, apikey string) {
 	}
 
 	job := ShowJob(fqdn, apikey, r.Job)
+	bar := progressbar.NewOptions(100, progressbar.OptionSetRenderBlankState(true))
 	for job.Status == "ACT" {
-		errors.LogDebug(fmt.Sprintf("Commit progress: %v\n", job.Progress))
 		job = ShowJob(fqdn, apikey, r.Job)
-		time.Sleep(2 * time.Second)
+		bar.Add(job.Progress)
+		time.Sleep(1 * time.Second)
 	}
+	bar.Finish()
 }
 
 func ShowJob(fqdn string, apikey string, jobid int) Job {
@@ -135,7 +138,7 @@ type Job struct {
 	Status    string `xml:"status"`
 	Queued    string `xml:"queued"`
 	Stoppable string `xml:"stoppable"`
-	Progress  string `xml:"progress"`
+	Progress  int    `xml:"progress"`
 	Warnings  string `xml:"warnings"`
 	Details   string `xml:"details"`
 }
