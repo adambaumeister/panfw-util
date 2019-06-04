@@ -5,6 +5,7 @@ env:
   - NO_TEST=true
 
 language: go
+dist: xenial
 
 branches:
   only:
@@ -12,13 +13,13 @@ branches:
   - /^v.*/
 
 after_success:
-  - GOOS=windows GOARCH=amd64 ; go build -o panutil.exe
+  - GOOS=windows GOARCH=amd64 ; go build -o ./panutil.exe
+  - ls -l
 
 deploy:
   provider: releases
   api_key: $api_token
-  files:
-    - "panutil.exe"
+  file: panutil.exe
   skip_cleanup: true
   on:
     tags: true
