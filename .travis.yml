@@ -1,0 +1,12 @@
+# Don't run integration tests in Travis.
+# We don't yet have a solution for this, perhaps in the future we can have a
+# cloud VM firewall constantly accessible.
+env:
+  - NO_TEST=true
+
+language: go
+
+branches:
+  only:
+  - master
+  - /^v.*/

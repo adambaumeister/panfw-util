@@ -1,6 +1,7 @@
 package device
 
 import (
+	"os"
 	"testing"
 )
 
@@ -30,7 +31,10 @@ func _TestLoad(t *testing.T) {
 }
 
 func TestCommit(t *testing.T) {
+	if os.Getenv("NO_TEST") != "" {
+		t.Skip()
+	}
 	fw := Connect(USER_DEFAULT, PASS_DEFAULT, TESTING_IP_DEFAULT)
-	fw.LoadNamed("panvm.xml")
+	fw.LoadNamed("panvm.xml", false)
 	fw.Commit()
 }
