@@ -4,6 +4,7 @@
 env:
   - NO_TEST=true
 
+# Golang environment
 language: go
 dist: xenial
 
@@ -13,13 +14,15 @@ branches:
   - /^v.*/
 
 after_success:
-  - GOOS=windows GOARCH=amd64 ; go build -o ./panutil.exe
+  - go get github.com/inconshreveable/mousetrap
+  - GOOS=windows GOARCH=amd64 go build -o ./panutil.exe
   - ls -l
 
 deploy:
   provider: releases
   api_key: $api_token
-  file: panutil.exe
+  files:
+    - panutil.exe
   skip_cleanup: true
   on:
     tags: true
