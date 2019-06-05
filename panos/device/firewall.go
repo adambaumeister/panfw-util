@@ -2,6 +2,7 @@ package device
 
 import (
 	"fmt"
+	"github.com/adambaumeister/panfw-util/panos/api"
 	"github.com/adambaumeister/panfw-util/panos/api/auth"
 	"github.com/adambaumeister/panfw-util/panos/api/deviceconfig"
 	"github.com/adambaumeister/panfw-util/panos/api/object"
@@ -34,6 +35,21 @@ func Connect(user string, pass string, fqdn string) *Firewall {
 	return &fw
 }
 
+func (fw *Firewall) Print(t string) {
+	var objs []api.Entry
+	switch t {
+	case "address":
+		// Not sure why this is required, probably golang idiosyncrasy
+		for _, a := range fw.Addresses() {
+			objs = append(objs, a)
+		}
+	}
+
+	for _, o := range objs {
+		o.Print()
+	}
+}
+
 func (fw *Firewall) Rules() {
 	/*
 		Return the firewall rulebase
@@ -45,14 +61,15 @@ func (fw *Firewall) Rules() {
 	policy.GetRules(fw.Fqdn, fw.Apikey, xps)
 }
 
-func (fw *Firewall) Addresses() {
+func (fw *Firewall) Addresses() []*object.Address {
 	/*
 		Return all the Address objects
 	*/
 
 	xps := fw.PrepQuery()
 	xps = append(xps, "address")
-	object.GetAddresses(fw.Fqdn, fw.Apikey, xps)
+	objs := object.GetAddresses(fw.Fqdn, fw.Apikey, xps)
+	return objs
 }
 
 func (fw *Firewall) Commit() {

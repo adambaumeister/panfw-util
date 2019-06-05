@@ -2,6 +2,7 @@ package object
 
 import (
 	"encoding/xml"
+	"fmt"
 	"github.com/adambaumeister/panfw-util/panos/api"
 	"net"
 )
@@ -48,4 +49,8 @@ type Address struct {
 	Name     string `xml:"name,attr"`
 	Ip       string `xml:"ip-netmask"`
 	IpObject *net.IPNet
+}
+
+func (a *Address) Print() {
+	fmt.Printf("%v, %v\n", a.Name, a.IpObject.String())
 }
