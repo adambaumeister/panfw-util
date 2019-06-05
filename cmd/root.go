@@ -55,6 +55,7 @@ func init() {
 	rootCmd.AddCommand(versionCmd)
 
 	rootCmd.AddCommand(loadCmd)
+	rootCmd.AddCommand(getCmd)
 }
 
 func initConfig() {
