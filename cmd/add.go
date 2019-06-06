@@ -6,16 +6,15 @@ import (
 	"github.com/spf13/viper"
 )
 
-var printCmd = &cobra.Command{
-	Use:   "print",
-	Short: "Dump various aspects of a PAN device",
+var addCmd = &cobra.Command{
+	Use:   "add",
+	Short: "Add objects to the PANOS device.",
 	Run: func(cmd *cobra.Command, args []string) {
 		username = viper.GetString("user")
 		password = viper.GetString("password")
 		hostname = viper.GetString("hostname")
 
-		d := device.ConnectUniversal(username, password, hostname)
-		d.Print(args[0])
+		fw := device.Connect(username, password, hostname)
+		fw.Add(args[0], args[1:])
 	},
-	Args: cobra.MinimumNArgs(1),
 }

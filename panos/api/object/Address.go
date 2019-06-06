@@ -4,6 +4,8 @@ import (
 	"encoding/xml"
 	"fmt"
 	"github.com/adambaumeister/panfw-util/panos/api"
+	"github.com/adambaumeister/panfw-util/panos/api/deviceconfig"
+	"github.com/adambaumeister/panfw-util/panos/errors"
 	"net"
 )
 
@@ -21,6 +23,7 @@ func GetAddresses(fqdn string, apikey string, xpath []string) []*Address {
 
 	r := AddressResponse{}
 	resp := q.Send()
+
 	xml.Unmarshal(resp, &r)
 
 	for _, addr := range r.Result.Entries {
@@ -28,14 +31,40 @@ func GetAddresses(fqdn string, apikey string, xpath []string) []*Address {
 		if err != nil {
 			ip := addr.Ip + "/32"
 			_, ipnet, err = net.ParseCIDR(ip)
-			addr.IpObject = ipnet
+			addr.ipObject = ipnet
 		} else {
-			addr.IpObject = ipnet
+			addr.ipObject = ipnet
 		}
 
 	}
 
 	return r.Result.Entries
+}
+
+func (addr *Address) Add(fqdn string, apikey string, xpath []string) deviceconfig.MsgJobResponse {
+	//xpath = append(xpath, fmt.Sprintf("entry[@name='%v']", addr.Name))
+
+	xaddr, err := xml.Marshal(addr)
+	errors.LogDebug(string(xaddr))
+	errors.DieIf(err)
+	//xaddr := fmt.Sprintf("<ip-netmask>%v</ip-netmask>", addr.Ip)
+
+	q := api.NewXpathQuery()
+	q.EnableAuth(apikey)
+	print(api.MakeXPath(xpath))
+	fmt.Print("\n")
+
+	q.SetXpath(xpath)
+	q.AddParam("type", "config")
+	q.AddParam("action", "set")
+	q.AddParam("element", string(xaddr))
+	q.SetPath(api.API_ROOT)
+	q.SetFqdn(fqdn)
+
+	resp := q.Send()
+	r := deviceconfig.MsgJobResponse{}
+	xml.Unmarshal(resp, &r)
+	return r
 }
 
 type AddressResponse struct {
@@ -45,12 +74,17 @@ type AddressResponse struct {
 type AddressContainer struct {
 	Entries []*Address `xml:"entry"`
 }
+
+type Entries struct {
+	Entries []*Address `xml:"entry"`
+}
 type Address struct {
-	Name     string `xml:"name,attr"`
-	Ip       string `xml:"ip-netmask"`
-	IpObject *net.IPNet
+	XMLName  xml.Name `xml:"entry"`
+	Name     string   `xml:"name,attr"`
+	Ip       string   `xml:"ip-netmask"`
+	ipObject *net.IPNet
 }
 
 func (a *Address) Print() {
-	fmt.Printf("%v, %v\n", a.Name, a.IpObject.String())
+	fmt.Printf("%v, %v\n", a.Name, a.ipObject.String())
 }

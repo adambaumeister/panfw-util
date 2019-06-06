@@ -16,8 +16,7 @@ type Firewall struct {
 	Universal
 
 	// Optional
-	Vsys   string
-	Device string
+	Vsys string
 }
 
 func Connect(user string, pass string, fqdn string) *Firewall {
@@ -25,9 +24,9 @@ func Connect(user string, pass string, fqdn string) *Firewall {
 		Connect to a Firewall and return it's containing Struct
 	*/
 	fw := Firewall{
-		Vsys:   "vsys1",
-		Device: "localhost.localdomain",
+		Vsys: "vsys1",
 	}
+	fw.Device = "localhost.localdomain"
 	fw.Fqdn = fqdn
 	fw.Apikey = auth.KeyGen(user, pass, fqdn)
 	fw.User = user
@@ -47,6 +46,19 @@ func (fw *Firewall) Print(t string) {
 
 	for _, o := range objs {
 		o.Print()
+	}
+}
+
+func (fw *Firewall) Add(t string, args []string) {
+	switch t {
+	case "address":
+		ob := object.Address{
+			Name: args[0],
+			Ip:   args[1],
+		}
+		xps := fw.PrepQuery()
+		xps = append(xps, "address")
+		ob.Add(fw.Fqdn, fw.Apikey, xps)
 	}
 }
 
