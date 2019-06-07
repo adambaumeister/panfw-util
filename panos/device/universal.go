@@ -19,15 +19,22 @@ type Universal struct {
 	Device string
 }
 
+/*
+Generic PANOS interface
+
+Functions that interact with any PAN-OS device.
+*/
 type Panos interface {
 	Print(string)
+	ImportNamed(string)
+	LoadNamed(string, bool)
 }
 
 func ConnectUniversal(user string, pass string, fqdn string) Panos {
 	/*
 		Connect to a Panos device and return it
 	*/
-	// We use Firewall as the container as it works regardless of the underyling
+	// We use Firewall as the container as it works regardless of the underyling type
 	fw := Firewall{}
 	fw.Device = "localhost.localdomain"
 	fw.Fqdn = fqdn
@@ -36,11 +43,14 @@ func ConnectUniversal(user string, pass string, fqdn string) Panos {
 	fw.Pass = pass
 
 	si := show.ShowSystemInfo(fw.Fqdn, fw.Apikey)
+	// Switch based on the model
 	if si.Model == "Panorama" {
 		p := Panorama{}
 		p.Apikey = fw.Apikey
 		p.Fqdn = fw.Fqdn
 		p.Device = fw.Device
+		// If it's panorama, get the device groups.
+		p.InitDeviceGroups()
 		return &p
 	}
 	return &fw

@@ -6,7 +6,7 @@ import (
 )
 
 type DeviceGroup struct {
-	Universal
+	parent *Panorama
 
 	Name string
 }
@@ -18,12 +18,13 @@ func (dg *DeviceGroup) Addresses() []*object.Address {
 
 	xps := dg.PrepQuery()
 	xps = append(xps, "address")
-	objs := object.GetAddresses(dg.Fqdn, dg.Apikey, xps)
+	// Important - use the parent connection details
+	objs := object.GetAddresses(dg.parent.Fqdn, dg.parent.Apikey, xps)
 	return objs
 }
 
 func (dg *DeviceGroup) PrepQuery() []string {
-	device := fmt.Sprintf("entry[@name='%v']", dg.Device)
+	device := fmt.Sprintf("entry[@name='%v']", dg.parent.Device)
 	group := fmt.Sprintf("device-group/entry[@name='%v']", dg.Name)
 
 	xps := []string{

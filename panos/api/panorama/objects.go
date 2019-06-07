@@ -6,7 +6,7 @@ import (
 	"github.com/adambaumeister/panfw-util/panos/api"
 )
 
-func GetDeviceGroups(fqdn string, apikey string, xpath []string) {
+func GetDeviceGroups(fqdn string, apikey string, xpath []string) []DeviceGroup {
 	q := api.NewXpathQuery()
 	q.EnableAuth(apikey)
 
@@ -19,6 +19,7 @@ func GetDeviceGroups(fqdn string, apikey string, xpath []string) {
 	r := DgResponse{}
 	xml.Unmarshal(resp, &r)
 	fmt.Printf("%v\n", r.Groups[0].Name)
+	return r.Groups
 }
 
 type DgResponse struct {
