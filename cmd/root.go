@@ -14,6 +14,7 @@ var username string
 var password string
 var hostname string
 var commit bool
+var devicegroup string
 
 var rootCmd = &cobra.Command{
 	Use:   "panutil",
@@ -48,6 +49,9 @@ func init() {
 
 	// Load config flags
 	loadCmd.Flags().BoolVar(&commit, "commit", false, "Commit the configuration.")
+
+	// Add flaggs
+	addCmd.Flags().StringVar(&devicegroup, "devicegroup", "shared", "Set the device group if targeting Panorama.")
 
 	viper.BindPFlag("user", rootCmd.PersistentFlags().Lookup("username"))
 	viper.BindPFlag("password", rootCmd.PersistentFlags().Lookup("password"))

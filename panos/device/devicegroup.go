@@ -2,6 +2,7 @@ package device
 
 import (
 	"fmt"
+	"github.com/adambaumeister/panfw-util/Input"
 	"github.com/adambaumeister/panfw-util/panos/api/object"
 )
 
@@ -23,7 +24,25 @@ func (dg *DeviceGroup) Addresses() []*object.Address {
 	return objs
 }
 
+func (dg *DeviceGroup) Add(args []string) {
+	objs := Input.ToObjects(args)
+
+	for _, ob := range objs {
+		xps := dg.PrepQuery()
+		xps = append(xps, ob.GetType())
+		ob.Add(dg.parent.Fqdn, dg.parent.Apikey, xps)
+	}
+}
+
 func (dg *DeviceGroup) PrepQuery() []string {
+
+	// Hacking around the fact that "shared" is not a normal DG
+	if dg.Name == "shared" {
+		xps := []string{
+			"/config/shared",
+		}
+		return xps
+	}
 	device := fmt.Sprintf("entry[@name='%v']", dg.parent.Device)
 	group := fmt.Sprintf("device-group/entry[@name='%v']", dg.Name)
 

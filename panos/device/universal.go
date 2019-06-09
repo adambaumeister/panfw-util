@@ -26,8 +26,12 @@ Functions that interact with any PAN-OS device.
 */
 type Panos interface {
 	Print(string)
+	Add([]string)
+
 	ImportNamed(string)
 	LoadNamed(string, bool)
+
+	SetDeviceGroup(string)
 }
 
 func ConnectUniversal(user string, pass string, fqdn string) Panos {
@@ -51,6 +55,7 @@ func ConnectUniversal(user string, pass string, fqdn string) Panos {
 		p.Device = fw.Device
 		// If it's panorama, get the device groups.
 		p.InitDeviceGroups()
+		p.CurrentDeviceGroup = "shared"
 		return &p
 	}
 	return &fw

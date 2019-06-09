@@ -14,7 +14,8 @@ var addCmd = &cobra.Command{
 		password = viper.GetString("password")
 		hostname = viper.GetString("hostname")
 
-		fw := device.Connect(username, password, hostname)
+		fw := device.ConnectUniversal(username, password, hostname)
+		fw.SetDeviceGroup(devicegroup)
 		fw.Add(args)
 	},
 }

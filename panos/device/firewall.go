@@ -97,3 +97,7 @@ func (fw *Firewall) PrepQuery() []string {
 	}
 	return xps
 }
+
+func (fw *Firewall) SetDeviceGroup(s string) {
+	// This function does nothing as Firewall devices do not have devicegroups
+}

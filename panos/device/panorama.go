@@ -4,12 +4,14 @@ import (
 	"fmt"
 	"github.com/adambaumeister/panfw-util/panos/api"
 	"github.com/adambaumeister/panfw-util/panos/api/panorama"
+	"github.com/adambaumeister/panfw-util/panos/errors"
 )
 
 type Panorama struct {
 	Universal
 
-	DeviceGroups []DeviceGroup
+	DeviceGroups       []DeviceGroup
+	CurrentDeviceGroup string
 }
 
 func (p *Panorama) Print(t string) {
@@ -52,4 +54,29 @@ func (p *Panorama) PrepQuery() []string {
 		device,
 	}
 	return xps
+}
+
+func (p *Panorama) Add(args []string) {
+	dg := p.getDG(p.CurrentDeviceGroup)
+	dg.Add(args)
+}
+
+func (p *Panorama) SetDeviceGroup(name string) {
+	errors.LogDebug(fmt.Sprintf("Setting active DG to %v", name))
+	p.CurrentDeviceGroup = name
+}
+
+func (p *Panorama) getDG(name string) *DeviceGroup {
+	for _, dg := range p.DeviceGroups {
+		if dg.Name == name {
+			errors.LogDebug(fmt.Sprintf("Found DG in Panorama: %v", name))
+			return &dg
+		}
+	}
+
+	dgobj := DeviceGroup{
+		Name:   "shared",
+		parent: p,
+	}
+	return &dgobj
 }
