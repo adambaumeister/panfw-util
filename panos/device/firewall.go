@@ -2,6 +2,7 @@ package device
 
 import (
 	"fmt"
+	"github.com/adambaumeister/panfw-util/Input"
 	"github.com/adambaumeister/panfw-util/panos/api"
 	"github.com/adambaumeister/panfw-util/panos/api/auth"
 	"github.com/adambaumeister/panfw-util/panos/api/deviceconfig"
@@ -49,15 +50,12 @@ func (fw *Firewall) Print(t string) {
 	}
 }
 
-func (fw *Firewall) Add(t string, args []string) {
-	switch t {
-	case "address":
-		ob := object.Address{
-			Name: args[0],
-			Ip:   args[1],
-		}
+func (fw *Firewall) Add(args []string) {
+	objs := Input.ToObjects(args)
+
+	for _, ob := range objs {
 		xps := fw.PrepQuery()
-		xps = append(xps, "address")
+		xps = append(xps, ob.GetType())
 		ob.Add(fw.Fqdn, fw.Apikey, xps)
 	}
 }

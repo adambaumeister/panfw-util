@@ -42,6 +42,12 @@ func GetAddresses(fqdn string, apikey string, xpath []string) []*Address {
 }
 
 func (addr *Address) Add(fqdn string, apikey string, xpath []string) deviceconfig.MsgJobResponse {
+	/*
+		Add an address object to fqdn at xpath location
+
+		Returns a msgJobResponse object containing the status
+	*/
+
 	//xpath = append(xpath, fmt.Sprintf("entry[@name='%v']", addr.Name))
 
 	xaddr, err := xml.Marshal(addr)
@@ -87,4 +93,8 @@ type Address struct {
 
 func (a *Address) Print() {
 	fmt.Printf("%v, %v\n", a.Name, a.ipObject.String())
+}
+
+func (a *Address) GetType() string {
+	return "address"
 }
