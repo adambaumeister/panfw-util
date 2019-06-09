@@ -9,7 +9,7 @@ import (
 )
 
 var loadCmd = &cobra.Command{
-	Use:   "load",
+	Use:   "load [path to config]",
 	Short: "Load, and commit, an XML configuration file from disk.",
 	Run: func(cmd *cobra.Command, args []string) {
 		username = viper.GetString("user")
