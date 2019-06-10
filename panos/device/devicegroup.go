@@ -25,7 +25,12 @@ func (dg *DeviceGroup) Addresses() []*object.Address {
 }
 
 func (dg *DeviceGroup) Add(args []string) {
-	objs := Input.ToObjects(args)
+	var objs []object.ApiObject
+	if len(args) == 0 {
+		objs = Input.ToObjects(nil)
+	} else {
+		objs = Input.ToObjects(args)
+	}
 
 	for _, ob := range objs {
 		xps := dg.PrepQuery()
