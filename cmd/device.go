@@ -28,3 +28,18 @@ var loadCmd = &cobra.Command{
 	},
 	Args: cobra.MinimumNArgs(1),
 }
+
+var importCmd = &cobra.Command{
+	Use:   "import [path to config]",
+	Short: "Import - without loading - a named configuration file.",
+	Run: func(cmd *cobra.Command, args []string) {
+		username = viper.GetString("user")
+		password = viper.GetString("password")
+		hostname = viper.GetString("hostname")
+
+		fw := device.Connect(username, password, hostname)
+		filename := args[0]
+		fw.ImportNamed(filename)
+	},
+	Args: cobra.MinimumNArgs(1),
+}
