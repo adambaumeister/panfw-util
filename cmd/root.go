@@ -59,6 +59,7 @@ func init() {
 	rootCmd.AddCommand(versionCmd)
 
 	rootCmd.AddCommand(loadCmd)
+	rootCmd.AddCommand(importCmd)
 	rootCmd.AddCommand(printCmd)
 	rootCmd.AddCommand(addCmd)
 }
