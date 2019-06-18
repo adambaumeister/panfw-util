@@ -2,7 +2,6 @@ package panorama
 
 import (
 	"encoding/xml"
-	"fmt"
 	"github.com/adambaumeister/panfw-util/panos/api"
 )
 
@@ -18,7 +17,6 @@ func GetDeviceGroups(fqdn string, apikey string, xpath []string) []DeviceGroup {
 	resp := q.Send()
 	r := DgResponse{}
 	xml.Unmarshal(resp, &r)
-	fmt.Printf("%v\n", r.Groups[0].Name)
 	return r.Groups
 }
 

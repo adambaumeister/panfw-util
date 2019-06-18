@@ -28,6 +28,13 @@ func (p *Panorama) Print(t string) {
 				objs = append(objs, a)
 			}
 		}
+	case "addressgroup":
+		// Not sure why this is required, probably golang idiosyncrasy
+		for _, dg := range p.DeviceGroups {
+			for _, a := range dg.AddressGroups() {
+				objs = append(objs, a)
+			}
+		}
 	}
 	for _, o := range objs {
 		o.Print()

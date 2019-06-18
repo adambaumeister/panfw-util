@@ -98,3 +98,46 @@ func (a *Address) Print() {
 func (a *Address) GetType() string {
 	return "address"
 }
+
+func GetAddressGroups(fqdn string, apikey string, xpath []string) []*AddressGroup {
+	/*
+	   Retrieve all the address objects at the given xpath
+	*/
+	q := api.NewXpathQuery()
+	q.EnableAuth(apikey)
+
+	q.SetXpath(xpath)
+	q.AddParam("type", "config")
+	q.SetPath(api.API_ROOT)
+	q.SetFqdn(fqdn)
+
+	r := AddressGroupResponse{}
+	resp := q.Send()
+
+	xml.Unmarshal(resp, &r)
+
+	errors.LogDebug(string(resp))
+	errors.LogDebug(r.Status)
+	return r.Entries
+}
+
+type AddressGroupResponse struct {
+	Status  string          `xml:"status,attr"`
+	Entries []*AddressGroup `xml:"result>address-group>entry"`
+}
+
+type AddressGroup struct {
+	Name          string   `xml:"name,attr"`
+	StaticMembers []string `xml:"static>member"`
+}
+
+func (ag *AddressGroup) Print() {
+	fmt.Printf("%v\n", ag.Name)
+	for _, entry := range ag.StaticMembers {
+		fmt.Printf(" %v\n", entry)
+	}
+}
+
+func (ag *AddressGroup) Add() {
+
+}

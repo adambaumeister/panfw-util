@@ -1,10 +1,12 @@
 package Input
 
 import (
+	"bytes"
 	"encoding/csv"
 	"fmt"
 	"github.com/adambaumeister/panfw-util/panos/api/object"
 	"github.com/adambaumeister/panfw-util/panos/errors"
+	"os"
 	"strings"
 )
 
@@ -15,6 +17,17 @@ func ToObjects(args []string) []object.ApiObject {
 	if len(strings.Split(s, ",")) > 1 {
 		errors.LogDebug("Input argument taken as a CSV")
 		return CsvToObjects(s)
+	}
+
+	if _, err := os.Stat(s); err == nil {
+		errors.LogDebug("Input argument taken as a file")
+		f, err := os.Open(s)
+		errors.DieIf(err)
+		buf := new(bytes.Buffer)
+		buf.ReadFrom(f)
+		csvString := buf.String()
+		errors.LogDebug(csvString)
+		return CsvToObjects(csvString)
 	}
 
 	return nil
