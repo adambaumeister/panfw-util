@@ -54,8 +54,6 @@ func (addr *Address) Add(fqdn string, apikey string, xpath []string) deviceconfi
 
 	q := api.NewXpathQuery()
 	q.EnableAuth(apikey)
-	print(api.MakeXPath(xpath))
-	fmt.Print("\n")
 
 	q.SetXpath(xpath)
 	q.AddParam("type", "config")
@@ -94,6 +92,10 @@ func (a *Address) Print() {
 
 func (a *Address) GetType() string {
 	return "address"
+}
+
+func (a *Address) GetName() string {
+	return a.Name
 }
 
 func GetAddressGroups(fqdn string, apikey string, xpath []string) []*AddressGroup {
@@ -145,14 +147,11 @@ func (ag *AddressGroup) GetType() string {
 	return "address-group"
 }
 
-func (ag *AddressGroup) Add(fqdn string, apikey string, xpath []string) deviceconfig.MsgJobResponse {
+func (a *AddressGroup) GetName() string {
+	return a.Name
+}
 
-	/*
-		entries := []*AddressGroup{ag}
-		age := AddressGroupEntries{
-			Entries: entries,
-		}
-	*/
+func (ag *AddressGroup) Add(fqdn string, apikey string, xpath []string) deviceconfig.MsgJobResponse {
 	xaddr, err := xml.Marshal(ag)
 	errors.LogDebug(api.MakeXPath(xpath))
 	errors.LogDebug(string(xaddr))
@@ -160,7 +159,6 @@ func (ag *AddressGroup) Add(fqdn string, apikey string, xpath []string) deviceco
 
 	q := api.NewXpathQuery()
 	q.EnableAuth(apikey)
-	print(api.MakeXPath(xpath))
 
 	q.SetXpath(xpath)
 	q.AddParam("type", "config")

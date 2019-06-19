@@ -42,7 +42,8 @@ func (dg *DeviceGroup) Add(args []string) {
 	for _, ob := range objs {
 		xps := dg.PrepQuery()
 		xps = append(xps, ob.GetType())
-		ob.Add(dg.parent.Fqdn, dg.parent.Apikey, xps)
+		msg := ob.Add(dg.parent.Fqdn, dg.parent.Apikey, xps)
+		fmt.Printf("Add %v : %v\n", ob.GetName(), msg.Status)
 	}
 }
 

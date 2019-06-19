@@ -8,4 +8,5 @@ API Generics
 type ApiObject interface {
 	Add(string, string, []string) deviceconfig.MsgJobResponse
 	GetType() string
+	GetName() string
 }
