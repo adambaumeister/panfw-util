@@ -43,6 +43,10 @@ func (fw *Firewall) Print(t string) {
 		for _, a := range fw.Addresses() {
 			objs = append(objs, a)
 		}
+	case "address-group":
+		for _, a := range fw.AddressGroups() {
+			objs = append(objs, a)
+		}
 	}
 
 	for _, o := range objs {
@@ -78,6 +82,17 @@ func (fw *Firewall) Addresses() []*object.Address {
 
 	xps := fw.PrepQuery()
 	xps = append(xps, "address")
+	objs := object.GetAddresses(fw.Fqdn, fw.Apikey, xps)
+	return objs
+}
+
+func (fw *Firewall) AddressGroups() []*object.Address {
+	/*
+		Return all the Address objects
+	*/
+
+	xps := fw.PrepQuery()
+	xps = append(xps, "address-group")
 	objs := object.GetAddresses(fw.Fqdn, fw.Apikey, xps)
 	return objs
 }

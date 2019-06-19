@@ -36,6 +36,14 @@ func (dg *DeviceGroup) AddressGroups() []*object.AddressGroup {
 	return objs
 }
 
+func (dg *DeviceGroup) Services() []*object.Service {
+	xps := dg.PrepQuery()
+	xps = append(xps, "service")
+	// Important - use the parent connection details
+	objs := object.GetServices(dg.parent.Fqdn, dg.parent.Apikey, xps)
+	return objs
+}
+
 func (dg *DeviceGroup) Add(args []string) {
 	objs := Input.ToObjects(args)
 

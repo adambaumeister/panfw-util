@@ -125,11 +125,6 @@ type AddressGroupResponse struct {
 	Entries []*AddressGroup `xml:"result>address-group>entry"`
 }
 
-type AddressGroupEntries struct {
-	XMLName xml.Name        `xml:"address-group"`
-	Entries []*AddressGroup `xml:"entry"`
-}
-
 type AddressGroup struct {
 	XMLName       xml.Name `xml:"entry"`
 	Name          string   `xml:"name,attr"`
