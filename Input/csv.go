@@ -59,6 +59,14 @@ func ListToObjects(vals []string) object.ApiObject {
 			Name: name,
 			Ip:   ip,
 		}
+	case t == "address-group":
+		name := vals[1]
+		member := vals[2]
+		members := []string{member}
+		o = &object.AddressGroup{
+			Name:          name,
+			StaticMembers: members,
+		}
 	}
 	return o
 }

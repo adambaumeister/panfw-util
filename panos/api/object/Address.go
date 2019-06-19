@@ -48,12 +48,9 @@ func (addr *Address) Add(fqdn string, apikey string, xpath []string) deviceconfi
 		Returns a msgJobResponse object containing the status
 	*/
 
-	//xpath = append(xpath, fmt.Sprintf("entry[@name='%v']", addr.Name))
-
 	xaddr, err := xml.Marshal(addr)
 	errors.LogDebug(string(xaddr))
 	errors.DieIf(err)
-	//xaddr := fmt.Sprintf("<ip-netmask>%v</ip-netmask>", addr.Ip)
 
 	q := api.NewXpathQuery()
 	q.EnableAuth(apikey)
@@ -126,7 +123,13 @@ type AddressGroupResponse struct {
 	Entries []*AddressGroup `xml:"result>address-group>entry"`
 }
 
+type AddressGroupEntries struct {
+	XMLName xml.Name        `xml:"address-group"`
+	Entries []*AddressGroup `xml:"entry"`
+}
+
 type AddressGroup struct {
+	XMLName       xml.Name `xml:"entry"`
 	Name          string   `xml:"name,attr"`
 	StaticMembers []string `xml:"static>member"`
 }
@@ -138,6 +141,37 @@ func (ag *AddressGroup) Print() {
 	}
 }
 
-func (ag *AddressGroup) Add() {
+func (ag *AddressGroup) GetType() string {
+	return "address-group"
+}
 
+func (ag *AddressGroup) Add(fqdn string, apikey string, xpath []string) deviceconfig.MsgJobResponse {
+
+	/*
+		entries := []*AddressGroup{ag}
+		age := AddressGroupEntries{
+			Entries: entries,
+		}
+	*/
+	xaddr, err := xml.Marshal(ag)
+	errors.LogDebug(api.MakeXPath(xpath))
+	errors.LogDebug(string(xaddr))
+	errors.DieIf(err)
+
+	q := api.NewXpathQuery()
+	q.EnableAuth(apikey)
+	print(api.MakeXPath(xpath))
+
+	q.SetXpath(xpath)
+	q.AddParam("type", "config")
+	q.AddParam("action", "set")
+	q.AddParam("element", string(xaddr))
+	q.SetPath(api.API_ROOT)
+	q.SetFqdn(fqdn)
+
+	resp := q.Send()
+	r := deviceconfig.MsgJobResponse{}
+	xml.Unmarshal(resp, &r)
+	errors.LogDebug(string(resp))
+	return r
 }
