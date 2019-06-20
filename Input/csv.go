@@ -67,6 +67,26 @@ func ListToObjects(vals []string) object.ApiObject {
 			Name:          name,
 			StaticMembers: members,
 		}
+	case t == "service":
+		name := vals[1]
+
+		srvObj := &object.Service{
+			Name: name,
+		}
+		protocol := vals[2]
+		var pd object.PortDefinition
+		if protocol == "tcp" {
+			pd = object.PortDefinition{
+				Port: vals[3],
+			}
+			srvObj.Tcp = &pd
+		} else {
+			pd = object.PortDefinition{
+				Port: vals[3],
+			}
+			srvObj.Udp = &pd
+		}
+		o = srvObj
 	}
 	return o
 }
