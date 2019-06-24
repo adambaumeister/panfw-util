@@ -24,13 +24,34 @@ func (dg *DeviceGroup) Addresses() []*object.Address {
 	return objs
 }
 
+func (dg *DeviceGroup) AddressGroups() []*object.AddressGroup {
+	/*
+		Return all the Address objects
+	*/
+
+	xps := dg.PrepQuery()
+	xps = append(xps, "address-group")
+	// Important - use the parent connection details
+	objs := object.GetAddressGroups(dg.parent.Fqdn, dg.parent.Apikey, xps)
+	return objs
+}
+
+func (dg *DeviceGroup) Services() []*object.Service {
+	xps := dg.PrepQuery()
+	xps = append(xps, "service")
+	// Important - use the parent connection details
+	objs := object.GetServices(dg.parent.Fqdn, dg.parent.Apikey, xps)
+	return objs
+}
+
 func (dg *DeviceGroup) Add(args []string) {
 	objs := Input.ToObjects(args)
 
 	for _, ob := range objs {
 		xps := dg.PrepQuery()
 		xps = append(xps, ob.GetType())
-		ob.Add(dg.parent.Fqdn, dg.parent.Apikey, xps)
+		msg := ob.Add(dg.parent.Fqdn, dg.parent.Apikey, xps)
+		fmt.Printf("Add %v : %v\n", ob.GetName(), msg.Status)
 	}
 }
 
