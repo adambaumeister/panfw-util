@@ -15,6 +15,7 @@ var password string
 var hostname string
 var commit bool
 var devicegroup string
+var filename string
 
 var rootCmd = &cobra.Command{
 	Use:   "panutil",
@@ -62,6 +63,7 @@ func init() {
 	rootCmd.AddCommand(importCmd)
 	rootCmd.AddCommand(printCmd)
 	rootCmd.AddCommand(addCmd)
+	rootCmd.AddCommand(testPcap)
 }
 
 func initConfig() {
