@@ -16,6 +16,9 @@ var hostname string
 var commit bool
 var devicegroup string
 var filename string
+var maxTests int
+var fromZone string
+var toZone string
 
 var rootCmd = &cobra.Command{
 	Use:   "panutil",
@@ -53,6 +56,9 @@ func init() {
 
 	// Add flaggs
 	addCmd.Flags().StringVar(&devicegroup, "devicegroup", "shared", "Set the device group if targeting Panorama.")
+
+	// test Flags
+	testPcap.Flags().IntVar(&maxTests, "max", 10, "Maximum tests to run.")
 
 	viper.BindPFlag("user", rootCmd.PersistentFlags().Lookup("username"))
 	viper.BindPFlag("password", rootCmd.PersistentFlags().Lookup("password"))

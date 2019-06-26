@@ -9,6 +9,9 @@ type Flow struct {
 	sourcePort    string
 	Port          string `xml:"destination-port"`
 
+	From *string `xml:"from,omitempty"`
+	To   *string `xml:"to,omitempty"`
+
 	nethash       uint64
 	transportHash uint64
 }

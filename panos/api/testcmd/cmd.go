@@ -3,6 +3,7 @@ package testcmd
 import (
 	"encoding/xml"
 	"github.com/adambaumeister/panfw-util/panos/api"
+	"github.com/adambaumeister/panfw-util/panos/api/policy"
 	"github.com/adambaumeister/panfw-util/panos/errors"
 	"github.com/adambaumeister/panfw-util/pcaptest"
 )
@@ -12,7 +13,11 @@ type TestSecurityPolicyMatchCmd struct {
 	Flow    pcaptest.Flow `xml:"security-policy-match"`
 }
 
-func TestPolicy(fqdn string, apikey string, flow pcaptest.Flow) {
+type TestSecurityPolicyResult struct {
+	Rules policy.Rules `xml:"result>rules"`
+}
+
+func TestPolicy(fqdn string, apikey string, flow pcaptest.Flow) []policy.Rule {
 	cmd := TestSecurityPolicyMatchCmd{
 		Flow: flow,
 	}
@@ -25,4 +30,8 @@ func TestPolicy(fqdn string, apikey string, flow pcaptest.Flow) {
 	q.AddParam("type", "op")
 	resp := q.Send()
 	errors.LogDebug(string(resp))
+
+	r := TestSecurityPolicyResult{}
+	xml.Unmarshal(resp, &r)
+	return r.Rules.Entries
 }
