@@ -13,6 +13,10 @@ branches:
   - master
   - /^v.*/
 
+before_install:
+  - sudo apt-get update
+  - sudo apt-get -y install libcap-dev
+
 after_success:
   - go get github.com/inconshreveable/mousetrap
   - GOOS=windows GOARCH=amd64 go build -o ./panutil.exe
