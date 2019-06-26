@@ -16,6 +16,7 @@ branches:
 before_install:
   - sudo apt-get update
   - sudo apt-get -y install libcap-dev
+  - sudo apt-get -y install libpcap-dev
 
 after_success:
   - go get github.com/inconshreveable/mousetrap
