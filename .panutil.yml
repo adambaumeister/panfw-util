@@ -1,3 +1,4 @@
 user: admin
 password: admin
-hostname: localhost:9443
+#hostname: localhost:9443
+hostname: localhost:8443
