@@ -21,7 +21,7 @@ before_install:
 after_success:
   - go get github.com/inconshreveable/mousetrap
   - GOOS=windows GOARCH=amd64 go build -o ./panutil.exe
-  - GOOS=darwin GOARCH=amd64 go build -o ./panutil-mac
+  - GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 go build -o ./panutil-mac
   - GOOS=linux GOARCH=amd64 go build -o ./panutil
   - ls -l
 
