@@ -16,16 +16,24 @@ func ReadPcap(fn string) []Flow {
 		packetSource := gopacket.NewPacketSource(handle, handle.LinkType())
 		for packet := range packetSource.Packets() {
 			f := handlePacket(packet) // Do something with a packet here.
-			flows = append(flows, f)
+			if f != nil {
+				flows = append(flows, *f)
+			}
 		}
 	}
 	return Conversations(flows)
 }
 
-func handlePacket(p gopacket.Packet) Flow {
+func handlePacket(p gopacket.Packet) *Flow {
 	net := p.NetworkLayer()
+	if net == nil {
+		return nil
+	}
 	src, dst := net.NetworkFlow().Endpoints()
 	proto := p.TransportLayer()
+	if proto == nil {
+		return nil
+	}
 	if proto == nil {
 		errors.LogDebug("IP packet with no transport header, cannot convert to flow.")
 	}
@@ -44,5 +52,5 @@ func handlePacket(p gopacket.Packet) Flow {
 
 	flow.nethash = net.NetworkFlow().FastHash()
 	flow.transportHash = proto.TransportFlow().FastHash()
-	return flow
+	return &flow
 }
