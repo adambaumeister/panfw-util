@@ -17,7 +17,7 @@ type Flow struct {
 }
 
 func (f *Flow) Print() {
-	fmt.Printf("(%v) %v:%v %v:%v\n", f.Protocol, f.SourceIP, f.sourcePort, f.DestinationIP, f.Port)
+	fmt.Printf("(%v) %v:%v %v:%v", f.Protocol, f.SourceIP, f.sourcePort, f.DestinationIP, f.Port)
 }
 
 func Conversations(flows []Flow) []Flow {

@@ -29,11 +29,19 @@ func ParseAndTestPcap(fn string, fw *device.Firewall) {
 		flows = flows[:maxTests]
 	}
 	for _, f := range flows {
-		fmt.Printf("Testing flow...")
-		f.To = &toZone
-		f.From = &fromZone
+		if toZone != "" {
+			f.To = &toZone
+		}
+		if fromZone != "" {
+			f.From = &fromZone
+		}
+
 		f.Print()
-		rules := testcmd.TestPolicy(hostname, fw.Apikey, flows[0])
-		fmt.Printf("name: %v\n", rules[0].Name)
+		rules := testcmd.TestPolicy(hostname, fw.Apikey, f)
+		if len(rules) > 0 {
+			fmt.Printf(",MATCH,%v\n", rules[0].Name)
+		} else {
+			fmt.Printf(",NO MATCH,%v\n", rules[0].Name)
+		}
 	}
 }
