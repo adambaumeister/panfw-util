@@ -39,7 +39,9 @@ func ConnectUniversal(user string, pass string, fqdn string) Panos {
 		Connect to a Panos device and return it
 	*/
 	// We use Firewall as the container as it works regardless of the underyling type
-	fw := Firewall{}
+	fw := Firewall{
+		Vsys: "vsys1",
+	}
 	fw.Device = "localhost.localdomain"
 	fw.Fqdn = fqdn
 	fw.Apikey = auth.KeyGen(user, pass, fqdn)

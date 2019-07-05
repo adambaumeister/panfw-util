@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"github.com/adambaumeister/panfw-util/panos/device"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -30,7 +31,8 @@ var registerCmd = &cobra.Command{
 
 		fw := device.Connect(username, password, hostname)
 		fw.SetDeviceGroup(devicegroup)
-		fw.Register(args)
+		r := fw.Register(args)
+		fmt.Printf("Result: %v\n", r.Status)
 	},
 }
 
@@ -44,6 +46,7 @@ var unregisterCmd = &cobra.Command{
 
 		fw := device.Connect(username, password, hostname)
 		fw.SetDeviceGroup(devicegroup)
-		fw.UnRegister(args)
+		r := fw.UnRegister(args)
+		fmt.Printf("Result: %v\n", r.Status)
 	},
 }

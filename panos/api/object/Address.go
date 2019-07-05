@@ -17,6 +17,7 @@ func GetAddresses(fqdn string, apikey string, xpath []string) []*Address {
 	q.EnableAuth(apikey)
 
 	q.SetXpath(xpath)
+	errors.LogDebug(api.MakeXPath(q.Xpath))
 	q.AddParam("type", "config")
 	q.SetPath(api.API_ROOT)
 	q.SetFqdn(fqdn)
@@ -25,6 +26,7 @@ func GetAddresses(fqdn string, apikey string, xpath []string) []*Address {
 	resp := q.Send()
 
 	xml.Unmarshal(resp, &r)
+	errors.LogDebug(string(resp))
 
 	for _, addr := range r.Result.Entries {
 		_, ipnet, err := net.ParseCIDR(addr.Ip)

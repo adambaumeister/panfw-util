@@ -64,23 +64,39 @@ func (fw *Firewall) Add(args []string) {
 	}
 }
 
-func (fw *Firewall) Register(args []string) {
-	ip := args[0]
-	tag := args[1]
-	o := &object.UidEntry{
-		Ip:   ip,
-		Tags: []string{tag},
+func (fw *Firewall) Register(args []string) deviceconfig.MsgJobResponse {
+	// All args are treated as Ip addresses except the last, which is considered the tag
+	al := len(args)
+	var ips []string
+	ips = args[:al-1]
+	tag := args[al-1]
+	var entries []*object.UidEntry
+	for _, ip := range ips {
+		o := &object.UidEntry{
+			Ip:   ip,
+			Tags: []string{tag},
+		}
+		entries = append(entries, o)
 	}
-	o.Register(fw.Fqdn, fw.Apikey)
+
+	return object.BulkRegister(fw.Fqdn, fw.Apikey, entries)
 }
-func (fw *Firewall) UnRegister(args []string) {
-	ip := args[0]
-	tag := args[1]
-	o := &object.UidEntry{
-		Ip:   ip,
-		Tags: []string{tag},
+func (fw *Firewall) UnRegister(args []string) deviceconfig.MsgJobResponse {
+	// All args are treated as Ip addresses except the last, which is considered the tag
+	al := len(args)
+	var ips []string
+	ips = args[:al-1]
+	tag := args[al-1]
+	var entries []*object.UidEntry
+	for _, ip := range ips {
+		o := &object.UidEntry{
+			Ip:   ip,
+			Tags: []string{tag},
+		}
+		entries = append(entries, o)
 	}
-	o.UnRegister(fw.Fqdn, fw.Apikey)
+
+	return object.BulkUnRegister(fw.Fqdn, fw.Apikey, entries)
 }
 
 func (fw *Firewall) Rules() {
