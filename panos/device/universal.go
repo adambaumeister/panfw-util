@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/adambaumeister/panfw-util/panos/api/auth"
 	"github.com/adambaumeister/panfw-util/panos/api/deviceconfig"
+	"github.com/adambaumeister/panfw-util/panos/api/object"
 	"github.com/adambaumeister/panfw-util/panos/api/show"
 )
 
@@ -27,6 +28,8 @@ Functions that interact with any PAN-OS device.
 type Panos interface {
 	Print(string)
 	Add([]string)
+	Register([]string) deviceconfig.MsgJobResponse
+	UnRegister([]string) deviceconfig.MsgJobResponse
 
 	ImportNamed(string)
 	LoadNamed(string, bool)
@@ -82,4 +85,39 @@ func (fw *Universal) ImportNamed(fn string) {
 func (fw *Universal) LoadNamed(fn string, commit bool) {
 	fmt.Printf("Loading named configuration file %v...\n", fn)
 	deviceconfig.LoadNamedConfig(fw.Fqdn, fw.Apikey, fn, commit)
+}
+
+func (fw *Universal) Register(args []string) deviceconfig.MsgJobResponse {
+	// All args are treated as Ip addresses except the last, which is considered the tag
+	al := len(args)
+	var ips []string
+	ips = args[:al-1]
+	tag := args[al-1]
+	var entries []*object.UidEntry
+	for _, ip := range ips {
+		o := &object.UidEntry{
+			Ip:   ip,
+			Tags: []string{tag},
+		}
+		entries = append(entries, o)
+	}
+
+	return object.BulkRegister(fw.Fqdn, fw.Apikey, entries)
+}
+func (fw *Universal) UnRegister(args []string) deviceconfig.MsgJobResponse {
+	// All args are treated as Ip addresses except the last, which is considered the tag
+	al := len(args)
+	var ips []string
+	ips = args[:al-1]
+	tag := args[al-1]
+	var entries []*object.UidEntry
+	for _, ip := range ips {
+		o := &object.UidEntry{
+			Ip:   ip,
+			Tags: []string{tag},
+		}
+		entries = append(entries, o)
+	}
+
+	return object.BulkUnRegister(fw.Fqdn, fw.Apikey, entries)
 }

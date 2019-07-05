@@ -29,7 +29,7 @@ var registerCmd = &cobra.Command{
 		password = viper.GetString("password")
 		hostname = viper.GetString("hostname")
 
-		fw := device.Connect(username, password, hostname)
+		fw := device.ConnectUniversal(username, password, hostname)
 		fw.SetDeviceGroup(devicegroup)
 		r := fw.Register(args)
 		fmt.Printf("Result: %v\n", r.Status)
@@ -44,7 +44,7 @@ var unregisterCmd = &cobra.Command{
 		password = viper.GetString("password")
 		hostname = viper.GetString("hostname")
 
-		fw := device.Connect(username, password, hostname)
+		fw := device.ConnectUniversal(username, password, hostname)
 		fw.SetDeviceGroup(devicegroup)
 		r := fw.UnRegister(args)
 		fmt.Printf("Result: %v\n", r.Status)

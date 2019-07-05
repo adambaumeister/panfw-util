@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/adambaumeister/panfw-util/panos/api"
 	"github.com/adambaumeister/panfw-util/panos/api/panorama"
+	"github.com/adambaumeister/panfw-util/panos/api/show"
 	"github.com/adambaumeister/panfw-util/panos/errors"
 )
 
@@ -42,7 +43,16 @@ func (p *Panorama) Print(t string) {
 				objs = append(objs, s)
 			}
 		}
+	case "registered-ips":
+		objs = append(objs, show.ShowRegisteredIPs(p.Fqdn, p.Apikey))
+	case "?":
+		fmt.Printf("Available options:\n")
+		fmt.Printf(" address\n")
+		fmt.Printf(" address-group\n")
+		fmt.Printf(" service\n")
+		fmt.Printf(" registered-ips\n")
 	}
+
 	for _, o := range objs {
 		o.Print()
 	}

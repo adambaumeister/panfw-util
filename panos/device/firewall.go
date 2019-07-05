@@ -8,6 +8,7 @@ import (
 	"github.com/adambaumeister/panfw-util/panos/api/deviceconfig"
 	"github.com/adambaumeister/panfw-util/panos/api/object"
 	"github.com/adambaumeister/panfw-util/panos/api/policy"
+	"github.com/adambaumeister/panfw-util/panos/api/show"
 )
 
 const DEVICE_XPATH = "/config/devices"
@@ -47,6 +48,13 @@ func (fw *Firewall) Print(t string) {
 		for _, a := range fw.AddressGroups() {
 			objs = append(objs, a)
 		}
+	case "registered-ips":
+		objs = append(objs, show.ShowRegisteredIPs(fw.Fqdn, fw.Apikey))
+	case "?":
+		fmt.Printf("Available options:\n")
+		fmt.Printf(" address\n")
+		fmt.Printf(" address-group\n")
+		fmt.Printf(" registered-ips\n")
 	}
 
 	for _, o := range objs {
@@ -62,41 +70,6 @@ func (fw *Firewall) Add(args []string) {
 		xps = append(xps, ob.GetType())
 		ob.Add(fw.Fqdn, fw.Apikey, xps)
 	}
-}
-
-func (fw *Firewall) Register(args []string) deviceconfig.MsgJobResponse {
-	// All args are treated as Ip addresses except the last, which is considered the tag
-	al := len(args)
-	var ips []string
-	ips = args[:al-1]
-	tag := args[al-1]
-	var entries []*object.UidEntry
-	for _, ip := range ips {
-		o := &object.UidEntry{
-			Ip:   ip,
-			Tags: []string{tag},
-		}
-		entries = append(entries, o)
-	}
-
-	return object.BulkRegister(fw.Fqdn, fw.Apikey, entries)
-}
-func (fw *Firewall) UnRegister(args []string) deviceconfig.MsgJobResponse {
-	// All args are treated as Ip addresses except the last, which is considered the tag
-	al := len(args)
-	var ips []string
-	ips = args[:al-1]
-	tag := args[al-1]
-	var entries []*object.UidEntry
-	for _, ip := range ips {
-		o := &object.UidEntry{
-			Ip:   ip,
-			Tags: []string{tag},
-		}
-		entries = append(entries, o)
-	}
-
-	return object.BulkUnRegister(fw.Fqdn, fw.Apikey, entries)
 }
 
 func (fw *Firewall) Rules() {
