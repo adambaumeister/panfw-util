@@ -72,6 +72,8 @@ func init() {
 	rootCmd.AddCommand(printCmd)
 	rootCmd.AddCommand(addCmd)
 	rootCmd.AddCommand(testPcap)
+	rootCmd.AddCommand(registerCmd)
+	rootCmd.AddCommand(unregisterCmd)
 }
 
 func initConfig() {

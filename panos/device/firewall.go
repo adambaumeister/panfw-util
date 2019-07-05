@@ -64,6 +64,25 @@ func (fw *Firewall) Add(args []string) {
 	}
 }
 
+func (fw *Firewall) Register(args []string) {
+	ip := args[0]
+	tag := args[1]
+	o := &object.UidEntry{
+		Ip:   ip,
+		Tags: []string{tag},
+	}
+	o.Register(fw.Fqdn, fw.Apikey)
+}
+func (fw *Firewall) UnRegister(args []string) {
+	ip := args[0]
+	tag := args[1]
+	o := &object.UidEntry{
+		Ip:   ip,
+		Tags: []string{tag},
+	}
+	o.UnRegister(fw.Fqdn, fw.Apikey)
+}
+
 func (fw *Firewall) Rules() {
 	/*
 		Return the firewall rulebase
