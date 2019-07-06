@@ -61,13 +61,14 @@ panutil add addressgroup,testgroup,test
 panutil add service,test-service,tcp,8080
 ```
 
-### Testpcap
-_testpcap_ retrieves flows from a saved packet capture in pcap format and runs the PANOS test functionality based on the flows seen.
-
-This is useful for testing policy matches against real traffic. Optionally, source and destination zone can be specified to increase the accuracy of the tests.
+### Register
+Registers a list of IP addresses with an associated tag for use in dynamic address groups.
 
 ```bash
-panutil testpcap capture.pcap 
+# Register; the last item is always the tag
+panutil register 192.168.1.1 192.168.1.2 192.168.1.3 servers
+# Unregister; same as above
+panutil unregister 192.168.1.1 192.168.1.2 192.168.1.3 servers
 ```
 
 # Development

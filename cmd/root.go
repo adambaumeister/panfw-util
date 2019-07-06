@@ -57,11 +57,6 @@ func init() {
 	// Add flaggs
 	addCmd.Flags().StringVar(&devicegroup, "devicegroup", "shared", "Set the device group if targeting Panorama.")
 
-	// test Flags
-	testPcap.Flags().IntVar(&maxTests, "max", 10, "Maximum tests to run.")
-	testPcap.Flags().StringVar(&fromZone, "from", "", "Maximum tests to run.")
-	testPcap.Flags().StringVar(&toZone, "to", "", "Maximum tests to run.")
-
 	viper.BindPFlag("user", rootCmd.PersistentFlags().Lookup("username"))
 	viper.BindPFlag("password", rootCmd.PersistentFlags().Lookup("password"))
 	viper.BindPFlag("hostname", rootCmd.PersistentFlags().Lookup("hostname"))
@@ -71,7 +66,6 @@ func init() {
 	rootCmd.AddCommand(importCmd)
 	rootCmd.AddCommand(printCmd)
 	rootCmd.AddCommand(addCmd)
-	rootCmd.AddCommand(testPcap)
 	rootCmd.AddCommand(registerCmd)
 	rootCmd.AddCommand(unregisterCmd)
 }
