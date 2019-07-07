@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/adambaumeister/panfw-util/panos/api/auth"
 	"github.com/adambaumeister/panfw-util/panos/api/deviceconfig"
+	"github.com/adambaumeister/panfw-util/panos/api/logs"
 	"github.com/adambaumeister/panfw-util/panos/api/object"
 	"github.com/adambaumeister/panfw-util/panos/api/show"
 )
@@ -30,6 +31,7 @@ type Panos interface {
 	Add([]string)
 	Register([]string) deviceconfig.MsgJobResponse
 	UnRegister([]string) deviceconfig.MsgJobResponse
+	LogQuery([]string)
 
 	ImportNamed(string)
 	LoadNamed(string, bool)
@@ -120,4 +122,14 @@ func (fw *Universal) UnRegister(args []string) deviceconfig.MsgJobResponse {
 	}
 
 	return object.BulkUnRegister(fw.Fqdn, fw.Apikey, entries)
+}
+
+func (fw *Universal) LogQuery(args []string) {
+	var qs string
+	if len(args) == 0 {
+		qs = ""
+	} else {
+		qs = args[0]
+	}
+	logs.Query(fw.Fqdn, fw.Apikey, qs)
 }
