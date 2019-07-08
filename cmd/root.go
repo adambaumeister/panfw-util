@@ -59,6 +59,9 @@ func init() {
 	// Add flaggs
 	addCmd.Flags().StringVar(&devicegroup, "devicegroup", "shared", "Set the device group if targeting Panorama.")
 
+	// print flags
+	printCmd.Flags().StringVar(&devicegroup, "devicegroup", "shared", "Set the device group if targeting Panorama.")
+
 	// Logs flags
 	logCmd.Flags().IntVar(&count, "count", 20, "Limit the returned count of logs.")
 	logCmd.Flags().StringVar(&logtype, "type", "traffic", "Specify the log to query.")

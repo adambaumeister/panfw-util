@@ -15,6 +15,7 @@ var printCmd = &cobra.Command{
 		hostname = viper.GetString("hostname")
 
 		d := device.ConnectUniversal(username, password, hostname)
+		d.SetDeviceGroup(devicegroup)
 		d.Print(args[0])
 	},
 	Args: cobra.MinimumNArgs(1),

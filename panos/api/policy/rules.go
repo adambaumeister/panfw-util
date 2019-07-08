@@ -8,7 +8,7 @@ import (
 )
 
 // GetRules retrieves a list of rules, present at xpath
-func GetRules(fqdn string, apikey string, xpath []string) []Rule {
+func GetRules(fqdn string, apikey string, xpath []string) []*Rule {
 	rq := api.NewXpathQuery()
 	rq.EnableAuth(apikey)
 
@@ -21,6 +21,7 @@ func GetRules(fqdn string, apikey string, xpath []string) []Rule {
 	resp := rq.Send()
 	xml.Unmarshal(resp, &r)
 
+	errors.LogDebug(string(resp))
 	if len(r.Result.Rules.Entries) == 0 {
 		errors.LogDebug(fmt.Sprintf("Rulebase query at %v returned zero entries.", api.MakeXPath(xpath)))
 	}
@@ -38,7 +39,7 @@ type Security struct {
 }
 
 type Rules struct {
-	Entries []Rule `xml:"entry"`
+	Entries []*Rule `xml:"entry"`
 }
 
 type Rule struct {
@@ -55,8 +56,13 @@ type Rule struct {
 	Action      string        `xml:"action"`
 	LogStart    string        `xml:"log-start"`
 	LogEnd      string        `xml:"log-end"`
+	Description string        `xml:"description"`
 }
 
 type MemberField struct {
 	Member string `xml:"member"`
+}
+
+func (r *Rule) Print() {
+	fmt.Printf("%v, %v\n", r.Name, r.Description)
 }
