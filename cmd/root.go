@@ -19,6 +19,8 @@ var filename string
 var maxTests int
 var fromZone string
 var toZone string
+var count int
+var logtype string
 
 var rootCmd = &cobra.Command{
 	Use:   "panutil",
@@ -56,6 +58,10 @@ func init() {
 
 	// Add flaggs
 	addCmd.Flags().StringVar(&devicegroup, "devicegroup", "shared", "Set the device group if targeting Panorama.")
+
+	// Logs flags
+	logCmd.Flags().IntVar(&count, "count", 20, "Limit the returned count of logs.")
+	logCmd.Flags().StringVar(&logtype, "type", "traffic", "Specify the log to query.")
 
 	viper.BindPFlag("user", rootCmd.PersistentFlags().Lookup("username"))
 	viper.BindPFlag("password", rootCmd.PersistentFlags().Lookup("password"))

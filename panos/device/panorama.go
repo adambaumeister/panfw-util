@@ -43,6 +43,13 @@ func (p *Panorama) Print(t string) {
 				objs = append(objs, s)
 			}
 		}
+	case "rules":
+		// Not sure why this is required, probably golang idiosyncrasy
+		for _, dg := range p.DeviceGroups {
+			for _, s := range dg.Rules() {
+				objs = append(objs, s)
+			}
+		}
 	case "registered-ips":
 		objs = append(objs, show.ShowRegisteredIPs(p.Fqdn, p.Apikey))
 	case "?":
@@ -51,6 +58,7 @@ func (p *Panorama) Print(t string) {
 		fmt.Printf(" address-group\n")
 		fmt.Printf(" service\n")
 		fmt.Printf(" registered-ips\n")
+		fmt.Printf(" rules\n")
 	}
 
 	for _, o := range objs {

@@ -15,6 +15,6 @@ var logCmd = &cobra.Command{
 		hostname = viper.GetString("hostname")
 
 		fw := device.ConnectUniversal(username, password, hostname)
-		fw.LogQuery(args)
+		fw.LogQuery(args, count, logtype)
 	},
 }

@@ -31,7 +31,7 @@ type Panos interface {
 	Add([]string)
 	Register([]string) deviceconfig.MsgJobResponse
 	UnRegister([]string) deviceconfig.MsgJobResponse
-	LogQuery([]string)
+	LogQuery([]string, int, string)
 
 	ImportNamed(string)
 	LoadNamed(string, bool)
@@ -124,12 +124,12 @@ func (fw *Universal) UnRegister(args []string) deviceconfig.MsgJobResponse {
 	return object.BulkUnRegister(fw.Fqdn, fw.Apikey, entries)
 }
 
-func (fw *Universal) LogQuery(args []string) {
+func (fw *Universal) LogQuery(args []string, count int, logtype string) {
 	var qs string
 	if len(args) == 0 {
 		qs = ""
 	} else {
 		qs = args[0]
 	}
-	logs.Query(fw.Fqdn, fw.Apikey, qs)
+	logs.Query(fw.Fqdn, fw.Apikey, qs, count, logtype)
 }

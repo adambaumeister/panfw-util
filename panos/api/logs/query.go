@@ -10,31 +10,40 @@ import (
 	"time"
 )
 
-type LogEntry interface {
-	Print()
+type LogResponse struct {
+	Count    int         `xml:"count,attr"`
+	Progress int         `xml:"progress,attr"`
+	Entries  []*LogEntry `xml:"entry"`
+}
+type LogEntry struct {
+	Type        string `xml:"type"`
+	ReceiveTime string `xml:"receive_time"`
+	// Traffic log fieldsd
+	Rule  string `xml:"rule"`
+	Src   string `xml:"src"`
+	Dst   string `xml:"dst"`
+	Sport string `xml:"sport"`
+	Dport string `xml:"dport"`
+	// Config log fields
+	Path string `xml:"path"`
 }
 
-type TrafficLogResponse struct {
-	Count    int                `xml:"count,attr"`
-	Progress int                `xml:"progress,attr"`
-	Entries  []*TrafficLogEntry `xml:"entry"`
-}
-type TrafficLogEntry struct {
-	Rule string `xml:"rule"`
-	Src  string `xml:"src"`
-	Dst  string `xml:"dst"`
+func (l *LogEntry) Print() {
+	switch l.Type {
+	case "TRAFFIC":
+		fmt.Printf("%v: %v, %v:%v, %v:%v\n", l.ReceiveTime, l.Rule, l.Src, l.Sport, l.Dst, l.Dport)
+	case "CONFIG":
+		fmt.Printf("%v: %v\n", l.ReceiveTime, l.Path)
+	}
 }
 
-func (l *TrafficLogEntry) Print() {
-	fmt.Printf("%v, %v, %v\n", l.Rule, l.Src, l.Dst)
-}
-
-func Query(fqdn string, apikey string, query string) {
+func Query(fqdn string, apikey string, query string, count int, logtype string) {
 	q := api.NewParamQuery()
 	q.EnableAuth(apikey)
 
 	q.AddParam("type", "log")
-	q.AddParam("log-type", "traffic")
+	q.AddParam("log-type", logtype)
+	q.AddParam("nlogs", fmt.Sprintf("%v", count))
 	if query != "" {
 		q.AddParam("query", query)
 	}
@@ -60,6 +69,7 @@ func Query(fqdn string, apikey string, query string) {
 		time.Sleep(1 * time.Second)
 	}
 	bar.Finish()
+	print("\n")
 	for _, e := range job.Log.Entries {
 		e.Print()
 	}
@@ -89,5 +99,5 @@ func ShowQueryJob(fqdn string, apikey string, jobid int) *QueryJobResult {
 
 type QueryJobResult struct {
 	deviceconfig.Job `xml:"result>job"`
-	Log              TrafficLogResponse `xml:"result>log>logs"`
+	Log              LogResponse `xml:"result>log>logs"`
 }
