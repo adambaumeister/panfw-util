@@ -25,7 +25,8 @@ type LogEntry struct {
 	Sport string `xml:"sport"`
 	Dport string `xml:"dport"`
 	// Config log fields
-	Path string `xml:"path"`
+	Path     string `xml:"path"`
+	FullPath string `xml:"full-path"`
 }
 
 func (l *LogEntry) Print() {
@@ -37,7 +38,7 @@ func (l *LogEntry) Print() {
 	}
 }
 
-func Query(fqdn string, apikey string, query string, count int, logtype string) {
+func Query(fqdn string, apikey string, query string, count int, logtype string) []*LogEntry {
 	q := api.NewParamQuery()
 	q.EnableAuth(apikey)
 
@@ -58,7 +59,7 @@ func Query(fqdn string, apikey string, query string, count int, logtype string) 
 
 	if r.Job == 0 {
 		errors.LogDebug(r.Msg)
-		return
+		return nil
 	}
 
 	job := ShowQueryJob(fqdn, apikey, r.Job)
@@ -70,10 +71,9 @@ func Query(fqdn string, apikey string, query string, count int, logtype string) 
 	}
 	bar.Finish()
 	print("\n")
-	for _, e := range job.Log.Entries {
-		e.Print()
-	}
+	return job.Log.Entries
 }
+
 func ShowQueryJob(fqdn string, apikey string, jobid int) *QueryJobResult {
 
 	jid := fmt.Sprintf("%v", jobid)

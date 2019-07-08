@@ -23,7 +23,9 @@ func GetRules(fqdn string, apikey string, xpath []string) []*Rule {
 
 	errors.LogDebug(string(resp))
 	if len(r.Result.Rules.Entries) == 0 {
-		errors.LogDebug(fmt.Sprintf("Rulebase query at %v returned zero entries.", api.MakeXPath(xpath)))
+		r := EntryResponse{}
+		xml.Unmarshal(resp, &r)
+		return r.Entries
 	}
 
 	return r.Result.Rules.Entries
@@ -32,6 +34,11 @@ func GetRules(fqdn string, apikey string, xpath []string) []*Rule {
 type RuleResponse struct {
 	Status string   `xml:"status,attr"`
 	Result Security `xml:"result>security"`
+}
+
+// Special response type, for when we are asking for a specific item
+type EntryResponse struct {
+	Entries []*Rule `xml:"result>entry"`
 }
 
 type Security struct {

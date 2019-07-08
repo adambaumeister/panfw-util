@@ -66,6 +66,10 @@ func init() {
 	logCmd.Flags().IntVar(&count, "count", 20, "Limit the returned count of logs.")
 	logCmd.Flags().StringVar(&logtype, "type", "traffic", "Specify the log to query.")
 
+	// Join command flats
+	joinCmd.Flags().IntVar(&count, "count", 20, "Limit the returned count of logs.")
+	joinCmd.Flags().StringVar(&logtype, "type", "traffic", "Specify the log to query.")
+
 	viper.BindPFlag("user", rootCmd.PersistentFlags().Lookup("username"))
 	viper.BindPFlag("password", rootCmd.PersistentFlags().Lookup("password"))
 	viper.BindPFlag("hostname", rootCmd.PersistentFlags().Lookup("hostname"))
@@ -75,6 +79,7 @@ func init() {
 	rootCmd.AddCommand(importCmd)
 	rootCmd.AddCommand(printCmd)
 	rootCmd.AddCommand(addCmd)
+	rootCmd.AddCommand(joinCmd)
 	rootCmd.AddCommand(logCmd)
 	rootCmd.AddCommand(registerCmd)
 	rootCmd.AddCommand(unregisterCmd)

@@ -15,7 +15,7 @@ type Panorama struct {
 	CurrentDeviceGroup string
 }
 
-func (p *Panorama) Print(t string) {
+func (p *Panorama) Get(t string) []api.Entry {
 	/*
 		Print a given type of object, like "address"
 		For panorama, this will iterate through all known object groups.
@@ -60,6 +60,12 @@ func (p *Panorama) Print(t string) {
 		fmt.Printf(" registered-ips\n")
 		fmt.Printf(" rules\n")
 	}
+
+	return objs
+}
+
+func (p *Panorama) Print(t string) {
+	objs := p.Get(t)
 
 	for _, o := range objs {
 		o.Print()
