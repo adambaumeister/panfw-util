@@ -4,7 +4,6 @@ import (
 	"github.com/adambaumeister/panfw-util/panos/device"
 	"github.com/adambaumeister/panfw-util/panos/errors"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"os"
 )
 
@@ -12,9 +11,9 @@ var loadCmd = &cobra.Command{
 	Use:   "load [path to config]",
 	Short: "Load, and commit, an XML configuration file from disk.",
 	Run: func(cmd *cobra.Command, args []string) {
-		username = viper.GetString("user")
-		password = viper.GetString("password")
-		hostname = viper.GetString("hostname")
+		hostname = PromptIfNil("hostname", false)
+		password = PromptIfNil("password", true)
+		username = PromptIfNil("user", false)
 
 		fw := device.Connect(username, password, hostname)
 		filename := args[0]
@@ -33,9 +32,9 @@ var importCmd = &cobra.Command{
 	Use:   "import [path to config]",
 	Short: "Import - without loading - a named configuration file.",
 	Run: func(cmd *cobra.Command, args []string) {
-		username = viper.GetString("user")
-		password = viper.GetString("password")
-		hostname = viper.GetString("hostname")
+		hostname = PromptIfNil("hostname", false)
+		password = PromptIfNil("password", true)
+		username = PromptIfNil("user", false)
 
 		fw := device.Connect(username, password, hostname)
 		filename := args[0]

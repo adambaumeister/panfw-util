@@ -64,6 +64,8 @@ type Rule struct {
 	LogStart    string        `xml:"log-start"`
 	LogEnd      string        `xml:"log-end"`
 	Description string        `xml:"description"`
+
+	lookupMap map[string]string
 }
 
 type MemberField struct {
@@ -72,4 +74,13 @@ type MemberField struct {
 
 func (r *Rule) Print() {
 	fmt.Printf("%v, %v\n", r.Name, r.Description)
+}
+
+func (r *Rule) Lookup(field string) string {
+	switch field {
+	case "description":
+		return r.Description
+	}
+
+	return r.Name
 }
