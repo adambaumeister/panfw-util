@@ -25,17 +25,53 @@ type LogEntry struct {
 	Sport string `xml:"sport"`
 	Dport string `xml:"dport"`
 	// Config log fields
-	Path     string `xml:"path"`
-	FullPath string `xml:"full-path"`
+	Path               string `xml:"path"`
+	FullPath           string `xml:"full-path"`
+	Serial             string `xml:"serial"`
+	DeviceName         string `xml:"device_name"`
+	Host               string `xml:"host"`
+	Command            string `xml:"cmd"`
+	Admin              string `xml:"admin"`
+	Result             string `xml:"result"`
+	AfterChangePreview string `xml:"after-change-preview"`
 }
 
 func (l *LogEntry) Print() {
-	switch l.Type {
-	case "TRAFFIC":
-		fmt.Printf("%v: %v, %v:%v, %v:%v\n", l.ReceiveTime, l.Rule, l.Src, l.Sport, l.Dst, l.Dport)
-	case "CONFIG":
-		fmt.Printf("%v: %v\n", l.ReceiveTime, l.Path)
+	_, vals := l.ToFields()
+	fmt.Printf("%v\n", vals)
+}
+
+func (l *LogEntry) ToFields() ([]string, []string) {
+	/*
+		Returns all of the fields for the log entry and the values associated with it based on the type
+	*/
+
+	if l.Type == "CONFIG" {
+		FieldKeys := []string{
+			"time",
+			"path",
+			"full-path",
+		}
+		FieldVals := []string{
+			l.ReceiveTime,
+			l.Path,
+			l.FullPath,
+		}
+		return FieldKeys, FieldVals
 	}
+
+	FieldKeys := []string{
+		"time",
+		"path",
+		"full-path",
+	}
+	FieldVals := []string{
+		l.ReceiveTime,
+		l.Src,
+		l.Dst,
+		l.Rule,
+	}
+	return FieldKeys, FieldVals
 }
 
 func Query(fqdn string, apikey string, query string, count int, logtype string) []*LogEntry {

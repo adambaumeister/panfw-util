@@ -44,7 +44,13 @@ var joinCmd = &cobra.Command{
 func JoinLogsWithRuleObjects(fw device.Panos, logs []*logs.LogEntry) {
 	apikey := fw.GetApiKey()
 	fqdn := fw.GetHostname()
-	fmt.Printf("CONFIG LOG RECEIVED TIME,RULE NAME,RULE DESCRIPTION\n")
+
+	// Print the field names
+	if len(logs) > 0 {
+		log := logs[0]
+		fields, _ := log.ToFields()
+		fmt.Printf("%v\n", strings.Join(fields, ", "))
+	}
 
 	for _, log := range logs {
 		xpath := strings.Split(log.FullPath, "/")
@@ -56,12 +62,13 @@ func JoinLogsWithRuleObjects(fw device.Panos, logs []*logs.LogEntry) {
 				match, err := regexp.MatchString(joinFilterVal, fieldVal)
 				errors.DieIf(err)
 				if match {
-					fmt.Printf("%v,%v,%v\n", log.ReceiveTime, r[0].Name, r[0].Description)
+					_, vals := log.ToFields()
+					fmt.Printf("%v\n", strings.Join(vals, ", "))
 				}
 			} else {
-				fmt.Printf("%v,%v,%v\n", log.ReceiveTime, r[0].Name, r[0].Description)
+				_, vals := log.ToFields()
+				fmt.Printf("%v\n", strings.Join(vals, ", "))
 			}
 		}
 	}
-
 }
