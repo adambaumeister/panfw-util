@@ -36,7 +36,7 @@ func Connect(user string, pass string, fqdn string) *Firewall {
 	return &fw
 }
 
-func (fw *Firewall) Print(t string) {
+func (fw *Firewall) Get(t string) []api.Entry {
 	var objs []api.Entry
 	switch t {
 	case "address":
@@ -56,6 +56,12 @@ func (fw *Firewall) Print(t string) {
 		fmt.Printf(" address-group\n")
 		fmt.Printf(" registered-ips\n")
 	}
+
+	return objs
+}
+
+func (fw *Firewall) Print(t string) {
+	objs := fw.Get(t)
 
 	for _, o := range objs {
 		o.Print()

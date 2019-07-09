@@ -11,9 +11,9 @@ var addCmd = &cobra.Command{
 	Use:   "add",
 	Short: "Add objects to the PANOS device.",
 	Run: func(cmd *cobra.Command, args []string) {
-		username = viper.GetString("user")
-		password = viper.GetString("password")
-		hostname = viper.GetString("hostname")
+		hostname = PromptIfNil("hostname", false)
+		password = PromptIfNil("password", true)
+		username = PromptIfNil("user", false)
 
 		fw := device.ConnectUniversal(username, password, hostname)
 		fw.SetDeviceGroup(devicegroup)
@@ -25,9 +25,9 @@ var registerCmd = &cobra.Command{
 	Use:   "register",
 	Short: "Register IP addresses with dynamic tags.",
 	Run: func(cmd *cobra.Command, args []string) {
-		username = viper.GetString("user")
-		password = viper.GetString("password")
-		hostname = viper.GetString("hostname")
+		hostname = PromptIfNil("hostname", false)
+		password = PromptIfNil("password", true)
+		username = PromptIfNil("user", false)
 
 		fw := device.ConnectUniversal(username, password, hostname)
 		fw.SetDeviceGroup(devicegroup)

@@ -34,6 +34,7 @@ HOSTNAME is an FQDN or IP address, with an optional port such as _test.corp.loca
  
 ## Functions
 ### Help
+
 _help_ allows you to navigate around panutil's CLI. 
 ```bash
 panutil.exe -h
@@ -61,13 +62,36 @@ panutil add addressgroup,testgroup,test
 panutil add service,test-service,tcp,8080
 ```
 
-### Testpcap
-_testpcap_ retrieves flows from a saved packet capture in pcap format and runs the PANOS test functionality based on the flows seen.
-
-This is useful for testing policy matches against real traffic. Optionally, source and destination zone can be specified to increase the accuracy of the tests.
+### Register
+Registers a list of IP addresses with an associated tag for use in dynamic address groups.
 
 ```bash
-panutil testpcap capture.pcap 
+# Register; the last item is always the tag
+panutil register 192.168.1.1 192.168.1.2 192.168.1.3 servers
+# Unregister; same as above
+panutil unregister 192.168.1.1 192.168.1.2 192.168.1.3 servers
+```
+
+### logs
+Display logs from the firewall or panorama device. 
+
+```bash
+panutil logs
+```
+
+### Join
+Join provides the ability to pivot between configuration log entries and objects.
+
+This is useful when auditing changes that have been made on a firewall by pulling whatever is at the xpath 
+referenced in the change. 
+
+Currently only security rules and configuration logs are supported targets for join.
+
+```bash
+# Basic example join
+panutil join --type config "path contains rule"
+# Filter to only display lines based on a match
+panutil join --type config --filterkey description --filterval example "path contains rule"
 ```
 
 # Development
@@ -78,6 +102,5 @@ go get ./...
 ```
 
 Make your changes and submit a PR on Github.
-
 
 

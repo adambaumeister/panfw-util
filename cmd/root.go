@@ -1,12 +1,15 @@
 package cmd
 
 import (
+	"bufio"
 	"fmt"
 	"github.com/adambaumeister/panfw-util/panos/errors"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"golang.org/x/crypto/ssh/terminal"
 	"os"
+	"syscall"
 )
 
 var cfgFile string
@@ -19,6 +22,10 @@ var filename string
 var maxTests int
 var fromZone string
 var toZone string
+var count int
+var logtype string
+var joinFilter string
+var joinFilterVal string
 
 var rootCmd = &cobra.Command{
 	Use:   "panutil",
@@ -57,10 +64,18 @@ func init() {
 	// Add flaggs
 	addCmd.Flags().StringVar(&devicegroup, "devicegroup", "shared", "Set the device group if targeting Panorama.")
 
-	// test Flags
-	testPcap.Flags().IntVar(&maxTests, "max", 10, "Maximum tests to run.")
-	testPcap.Flags().StringVar(&fromZone, "from", "", "Maximum tests to run.")
-	testPcap.Flags().StringVar(&toZone, "to", "", "Maximum tests to run.")
+	// print flags
+	printCmd.Flags().StringVar(&devicegroup, "devicegroup", "shared", "Set the device group if targeting Panorama.")
+
+	// Logs flags
+	logCmd.Flags().IntVar(&count, "count", 20, "Limit the returned count of logs.")
+	logCmd.Flags().StringVar(&logtype, "type", "traffic", "Specify the log to query.")
+
+	// Join command flats
+	joinCmd.Flags().IntVar(&count, "count", 20, "Limit the returned count of logs.")
+	joinCmd.Flags().StringVar(&logtype, "type", "traffic", "Specify the log to query.")
+	joinCmd.Flags().StringVar(&joinFilter, "filterkey", "", "Specify the log to query.")
+	joinCmd.Flags().StringVar(&joinFilterVal, "filterval", ".*", "Specify the log to query.")
 
 	viper.BindPFlag("user", rootCmd.PersistentFlags().Lookup("username"))
 	viper.BindPFlag("password", rootCmd.PersistentFlags().Lookup("password"))
@@ -71,7 +86,8 @@ func init() {
 	rootCmd.AddCommand(importCmd)
 	rootCmd.AddCommand(printCmd)
 	rootCmd.AddCommand(addCmd)
-	rootCmd.AddCommand(testPcap)
+	rootCmd.AddCommand(joinCmd)
+	rootCmd.AddCommand(logCmd)
 	rootCmd.AddCommand(registerCmd)
 	rootCmd.AddCommand(unregisterCmd)
 }
@@ -104,4 +120,26 @@ func initConfig() {
 		return
 		//os.Exit(1)
 	}
+}
+
+func PromptIfNil(p string, secret bool) string {
+	// If the val is nul
+	v := viper.GetString(p)
+	if v == "" {
+		fmt.Printf("Enter value for %v: ", p)
+		if secret {
+			bytePassword, err := terminal.ReadPassword(int(syscall.Stdin))
+			errors.DieIf(err)
+			password := string(bytePassword)
+			return password
+		} else {
+			reader := bufio.NewReader(os.Stdin)
+			fmt.Printf("Enter value for %v: ")
+			text, _ := reader.ReadString('\n')
+			return text
+		}
+	}
+	// otherwise just return the value DUH
+	return v
+
 }

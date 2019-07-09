@@ -2,8 +2,10 @@ package device
 
 import (
 	"fmt"
+	"github.com/adambaumeister/panfw-util/panos/api"
 	"github.com/adambaumeister/panfw-util/panos/api/auth"
 	"github.com/adambaumeister/panfw-util/panos/api/deviceconfig"
+	"github.com/adambaumeister/panfw-util/panos/api/logs"
 	"github.com/adambaumeister/panfw-util/panos/api/object"
 	"github.com/adambaumeister/panfw-util/panos/api/show"
 )
@@ -27,14 +29,26 @@ Functions that interact with any PAN-OS device.
 */
 type Panos interface {
 	Print(string)
+	Get(string) []api.Entry
 	Add([]string)
 	Register([]string) deviceconfig.MsgJobResponse
 	UnRegister([]string) deviceconfig.MsgJobResponse
+	LogQuery([]string, int, string) []*logs.LogEntry
+
+	GetApiKey() string
+	GetHostname() string
 
 	ImportNamed(string)
 	LoadNamed(string, bool)
 
 	SetDeviceGroup(string)
+}
+
+func (fw *Universal) GetApiKey() string {
+	return fw.Apikey
+}
+func (fw *Universal) GetHostname() string {
+	return fw.Fqdn
 }
 
 func ConnectUniversal(user string, pass string, fqdn string) Panos {
@@ -120,4 +134,14 @@ func (fw *Universal) UnRegister(args []string) deviceconfig.MsgJobResponse {
 	}
 
 	return object.BulkUnRegister(fw.Fqdn, fw.Apikey, entries)
+}
+
+func (fw *Universal) LogQuery(args []string, count int, logtype string) []*logs.LogEntry {
+	var qs string
+	if len(args) == 0 {
+		qs = ""
+	} else {
+		qs = args[0]
+	}
+	return logs.Query(fw.Fqdn, fw.Apikey, qs, count, logtype)
 }

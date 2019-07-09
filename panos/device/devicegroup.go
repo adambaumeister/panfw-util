@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/adambaumeister/panfw-util/Input"
 	"github.com/adambaumeister/panfw-util/panos/api/object"
+	"github.com/adambaumeister/panfw-util/panos/api/policy"
 )
 
 type DeviceGroup struct {
@@ -41,6 +42,15 @@ func (dg *DeviceGroup) Services() []*object.Service {
 	xps = append(xps, "service")
 	// Important - use the parent connection details
 	objs := object.GetServices(dg.parent.Fqdn, dg.parent.Apikey, xps)
+	return objs
+}
+
+func (dg *DeviceGroup) Rules() []*policy.Rule {
+	xps := dg.PrepQuery()
+	xps = append(xps, "pre-rulebase")
+	xps = append(xps, "security")
+	// Important - use the parent connection details
+	objs := policy.GetRules(dg.parent.Fqdn, dg.parent.Apikey, xps)
 	return objs
 }
 

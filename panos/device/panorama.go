@@ -15,7 +15,7 @@ type Panorama struct {
 	CurrentDeviceGroup string
 }
 
-func (p *Panorama) Print(t string) {
+func (p *Panorama) Get(t string) []api.Entry {
 	/*
 		Print a given type of object, like "address"
 		For panorama, this will iterate through all known object groups.
@@ -43,6 +43,13 @@ func (p *Panorama) Print(t string) {
 				objs = append(objs, s)
 			}
 		}
+	case "rules":
+		// Not sure why this is required, probably golang idiosyncrasy
+		for _, dg := range p.DeviceGroups {
+			for _, s := range dg.Rules() {
+				objs = append(objs, s)
+			}
+		}
 	case "registered-ips":
 		objs = append(objs, show.ShowRegisteredIPs(p.Fqdn, p.Apikey))
 	case "?":
@@ -51,7 +58,14 @@ func (p *Panorama) Print(t string) {
 		fmt.Printf(" address-group\n")
 		fmt.Printf(" service\n")
 		fmt.Printf(" registered-ips\n")
+		fmt.Printf(" rules\n")
 	}
+
+	return objs
+}
+
+func (p *Panorama) Print(t string) {
+	objs := p.Get(t)
 
 	for _, o := range objs {
 		o.Print()
