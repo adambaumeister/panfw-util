@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/adambaumeister/panfw-util/panos/api"
 	"github.com/adambaumeister/panfw-util/panos/errors"
+	"strings"
 )
 
 // GetRules retrieves a list of rules, present at xpath
@@ -52,7 +53,7 @@ type Rules struct {
 type Rule struct {
 	Name        string        `xml:"name,attr"`
 	To          []MemberField `xml:"to"`
-	From        []MemberField `xml:"From"`
+	From        []MemberField `xml:"from"`
 	Source      []MemberField `xml:"source"`
 	Destination []MemberField `xml:"destination"`
 	SourceUser  []MemberField `xml:"source-user"`
@@ -68,8 +69,50 @@ type Rule struct {
 	lookupMap map[string]string
 }
 
+func (r *Rule) ToFields() ([]string, []string) {
+	FieldKeys := []string{
+		"name",
+		"to",
+		"from",
+		"source",
+		"destination",
+		"source-user",
+		"category",
+		"application",
+		"service",
+		"action",
+		"log-start",
+		"log-end",
+		"description",
+	}
+	FieldVals := []string{
+		r.Name,
+		strings.Join(MembersToString(r.To), " "),
+		strings.Join(MembersToString(r.From), " "),
+		strings.Join(MembersToString(r.Source), " "),
+		strings.Join(MembersToString(r.Destination), " "),
+		strings.Join(MembersToString(r.SourceUser), " "),
+		strings.Join(MembersToString(r.Category), " "),
+		strings.Join(MembersToString(r.Application), " "),
+		strings.Join(MembersToString(r.Service), " "),
+		r.Action,
+		r.LogStart,
+		r.LogEnd,
+		r.Description,
+	}
+	return FieldKeys, FieldVals
+}
+
 type MemberField struct {
 	Member string `xml:"member"`
+}
+
+func MembersToString(mf []MemberField) []string {
+	r := []string{}
+	for _, member := range mf {
+		r = append(r, member.Member)
+	}
+	return r
 }
 
 func (r *Rule) Print() {

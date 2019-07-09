@@ -48,8 +48,11 @@ func JoinLogsWithRuleObjects(fw device.Panos, logs []*logs.LogEntry) {
 	// Print the field names
 	if len(logs) > 0 {
 		log := logs[0]
+		// We just need to get the field spec so we can init an dummy rule object to get it
+		r := policy.Rule{}
+		rfields, _ := r.ToFields()
 		fields, _ := log.ToFields()
-		fmt.Printf("%v\n", strings.Join(fields, ", "))
+		fmt.Printf("%v,%v\n", strings.Join(fields, ", "), strings.Join(rfields, ", "))
 	}
 
 	for _, log := range logs {
@@ -63,11 +66,13 @@ func JoinLogsWithRuleObjects(fw device.Panos, logs []*logs.LogEntry) {
 				errors.DieIf(err)
 				if match {
 					_, vals := log.ToFields()
-					fmt.Printf("%v\n", strings.Join(vals, ", "))
+					_, ruleVals := rule.ToFields()
+					fmt.Printf("%v,%v\n", strings.Join(vals, ", "), strings.Join(ruleVals, ", "))
 				}
 			} else {
 				_, vals := log.ToFields()
-				fmt.Printf("%v\n", strings.Join(vals, ", "))
+				_, ruleVals := rule.ToFields()
+				fmt.Printf("%v,%v\n", strings.Join(vals, ", "), strings.Join(ruleVals, ", "))
 			}
 		}
 	}

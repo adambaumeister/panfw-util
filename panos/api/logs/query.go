@@ -6,7 +6,6 @@ import (
 	"github.com/adambaumeister/panfw-util/panos/api"
 	"github.com/adambaumeister/panfw-util/panos/api/deviceconfig"
 	"github.com/adambaumeister/panfw-util/panos/errors"
-	"github.com/schollz/progressbar"
 	"time"
 )
 
@@ -49,11 +48,17 @@ func (l *LogEntry) ToFields() ([]string, []string) {
 	if l.Type == "CONFIG" {
 		FieldKeys := []string{
 			"time",
+			"admin",
+			"command",
+			"result",
 			"path",
 			"full-path",
 		}
 		FieldVals := []string{
 			l.ReceiveTime,
+			l.Admin,
+			l.Command,
+			l.Result,
 			l.Path,
 			l.FullPath,
 		}
@@ -99,14 +104,14 @@ func Query(fqdn string, apikey string, query string, count int, logtype string) 
 	}
 
 	job := ShowQueryJob(fqdn, apikey, r.Job)
-	bar := progressbar.NewOptions(100, progressbar.OptionSetRenderBlankState(true))
+	//bar := progressbar.NewOptions(100, progressbar.OptionSetRenderBlankState(true))
 	for job.Status == "ACT" {
 		job = ShowQueryJob(fqdn, apikey, r.Job)
-		bar.Add(job.Log.Progress)
+		//bar.Add(job.Log.Progress)
 		time.Sleep(1 * time.Second)
 	}
-	bar.Finish()
-	print("\n")
+	//bar.Finish()
+	//print("\n")
 	return job.Log.Entries
 }
 

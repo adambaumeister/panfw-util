@@ -34,6 +34,7 @@ HOSTNAME is an FQDN or IP address, with an optional port such as _test.corp.loca
  
 ## Functions
 ### Help
+
 _help_ allows you to navigate around panutil's CLI. 
 ```bash
 panutil.exe -h
@@ -69,6 +70,28 @@ Registers a list of IP addresses with an associated tag for use in dynamic addre
 panutil register 192.168.1.1 192.168.1.2 192.168.1.3 servers
 # Unregister; same as above
 panutil unregister 192.168.1.1 192.168.1.2 192.168.1.3 servers
+```
+
+### logs
+Display logs from the firewall or panorama device. 
+
+```bash
+panutil logs
+```
+
+### Join
+Join provides the ability to pivot between configuration log entries and objects.
+
+This is useful when auditing changes that have been made on a firewall by pulling whatever is at the xpath 
+referenced in the change. 
+
+Currently only security rules and configuration logs are supported targets for join.
+
+```bash
+# Basic example join
+panutil join --type config "path contains rule"
+# Filter to only display lines based on a match
+panutil join --type config --filterkey description --filterval example "path contains rule"
 ```
 
 # Development
