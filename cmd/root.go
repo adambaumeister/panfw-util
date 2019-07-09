@@ -74,8 +74,8 @@ func init() {
 	// Join command flats
 	joinCmd.Flags().IntVar(&count, "count", 20, "Limit the returned count of logs.")
 	joinCmd.Flags().StringVar(&logtype, "type", "traffic", "Specify the log to query.")
-	joinCmd.Flags().StringVar(&joinFilter, "filterkey", "", "Specify the log to query.")
-	joinCmd.Flags().StringVar(&joinFilterVal, "filterval", ".*", "Specify the log to query.")
+	joinCmd.Flags().StringVar(&joinFilter, "filterkey", "", "Field to filter on in joined object.")
+	joinCmd.Flags().StringVar(&joinFilterVal, "filterval", ".*", "Regex supported value to search for within value.")
 
 	viper.BindPFlag("user", rootCmd.PersistentFlags().Lookup("username"))
 	viper.BindPFlag("password", rootCmd.PersistentFlags().Lookup("password"))

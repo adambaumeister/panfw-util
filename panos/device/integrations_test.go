@@ -30,7 +30,7 @@ func _TestLoad(t *testing.T) {
 	fw.ImportNamed("panvm.xml")
 }
 
-func TestCommit(t *testing.T) {
+func _TestCommit(t *testing.T) {
 	if os.Getenv("NO_TEST") != "" {
 		t.Skip()
 	}
