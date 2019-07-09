@@ -134,7 +134,6 @@ func PromptIfNil(p string, secret bool) string {
 			return password
 		} else {
 			reader := bufio.NewReader(os.Stdin)
-			fmt.Printf("Enter value for %v: ")
 			text, _ := reader.ReadString('\n')
 			return text
 		}
