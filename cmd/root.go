@@ -90,6 +90,7 @@ func init() {
 	rootCmd.AddCommand(logCmd)
 	rootCmd.AddCommand(registerCmd)
 	rootCmd.AddCommand(unregisterCmd)
+	rootCmd.AddCommand(apiCmd)
 }
 
 func initConfig() {

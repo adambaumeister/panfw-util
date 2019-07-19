@@ -62,6 +62,9 @@ func ConnectUniversal(user string, pass string, fqdn string) Panos {
 	fw.Device = "localhost.localdomain"
 	fw.Fqdn = fqdn
 	fw.Apikey = auth.KeyGen(user, pass, fqdn)
+	if fw.Apikey == "" {
+		return nil
+	}
 	fw.User = user
 	fw.Pass = pass
 

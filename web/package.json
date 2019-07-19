@@ -1,0 +1,22 @@
+{
+  "name": "web",
+  "version": "1.0.0",
+  "description": "A small Electron based interface for panutil",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ."
+  },
+  "author": "Adam Baumeister",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^5.0.6"
+  },
+  "dependencies": {
+    "electron-json-storage": "^4.1.6",
+    "electron-store": "^4.0.0",
+    "jquery": "^3.4.1",
+    "js-cookie": "^2.2.0",
+    "jsdom": "^15.1.1"
+  }
+}

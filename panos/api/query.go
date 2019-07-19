@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 )
@@ -29,10 +30,13 @@ type QueryBase struct {
 	Path    string
 	Params  map[string]string
 	Headers map[string]string
+
+	FormValues url.Values
 }
 
 func (q *QueryBase) AddParam(k string, v string) {
 	q.Params[k] = v
+	q.FormValues.Add(k, v)
 }
 func (q *QueryBase) AddHeader(k string, v string) {
 	q.Headers[k] = v
@@ -45,6 +49,7 @@ func (q *QueryBase) SetFqdn(fqdn string) {
 }
 func (q *QueryBase) EnableAuth(apikey string) {
 	q.Params["key"] = apikey
+	q.FormValues.Add("key", apikey)
 }
 func (q *QueryBase) SetMultipart(boundary string) {
 	w := multipart.Writer{}
@@ -87,6 +92,18 @@ func (q *QueryBase) SetupPost(body io.Reader) *http.Request {
 	return req
 }
 
+func (q *QueryBase) SetupFormPost(body io.Reader) *http.Request {
+	req, err := http.NewRequest("POST", fmt.Sprintf("https://%v%v", q.Fqdn, q.Path), body)
+	errors.DieIf(err)
+
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	for k, v := range q.Headers {
+		req.Header.Add(k, v)
+	}
+
+	return req
+}
+
 func (q *QueryBase) GetUrlString() string {
 	req := q.Setup()
 	return req.URL.String()
@@ -104,6 +121,7 @@ func NewParamQuery() *ParamQuery {
 	pq := ParamQuery{}
 	pq.Params = make(map[string]string)
 	pq.Headers = make(map[string]string)
+	pq.FormValues = url.Values{}
 	return &pq
 }
 
@@ -126,6 +144,7 @@ func NewXpathQuery() *XpathQuery {
 	xpq := XpathQuery{}
 	xpq.Params = make(map[string]string)
 	xpq.Headers = make(map[string]string)
+	xpq.FormValues = url.Values{}
 	return &xpq
 }
 
@@ -137,8 +156,9 @@ func (q *XpathQuery) Send() []byte {
 	xpath := MakeXPath(q.Xpath)
 	q.AddParam("xpath", xpath)
 
-	req := q.Setup()
-
+	// Use POST as a url encoded form instead of GET
+	req := q.SetupFormPost(strings.NewReader(q.FormValues.Encode()))
+	errors.LogDebug(q.FormValues.Encode())
 	errors.LogDebug(req.URL.String())
 	return SendHttpReq(req)
 }
@@ -156,6 +176,7 @@ func NewPost(data io.Reader) *Post {
 	}
 	p.Params = make(map[string]string)
 	p.Headers = make(map[string]string)
+	p.FormValues = url.Values{}
 	return &p
 }
 
@@ -176,6 +197,7 @@ func NewCmd(command interface{}) *Cmd {
 	}
 	c.Params = make(map[string]string)
 	c.Headers = make(map[string]string)
+	c.FormValues = url.Values{}
 	return &c
 }
 

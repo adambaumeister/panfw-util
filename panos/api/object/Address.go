@@ -66,6 +66,7 @@ func (addr *Address) Add(fqdn string, apikey string, xpath []string) deviceconfi
 
 	resp := q.Send()
 	r := deviceconfig.MsgJobResponse{}
+	errors.LogDebug(string(resp))
 	xml.Unmarshal(resp, &r)
 	return r
 }

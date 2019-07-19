@@ -1,4 +1,3 @@
 user: admin
 password: admin
-hostname: localhost:9443
-#hostname: localhost:8443
+hostname: 192.168.1.140

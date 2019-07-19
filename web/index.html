@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script>
+        delete module.exports
+    </script>
+    <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="js/web.js"></script>
+</head>
+<body>
+    <div class="status">
+        <div class="status-header">
+            Panos Utility
+        </div>
+        <div class="status-check">
+            <table class="centered">
+                <tr>
+                    <td>Panutil status</td>
+                    <td><div id="pstatus"></div></td>
+                </tr>
+                <tr>
+                    <td>Connection status</td>
+                    <td><span id="dstatus" class="bad-dot"></span></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div id="main" class="main">
+        <form id="login-form">
+            <input id="username" type="text" name="Username" placeholder="Username">
+            <input id="password" type="password" name="Password" placeholder="Password">
+            <input id="hostname" type="text" name="Hostname" placeholder="FQDN or IP address.">
+        </form>
+        <button id="loginb" class="hover-button">Login</button><div id="dstatus"></div>
+    </div>
+    <div id="logs" class="text-scroller">
+    </div>
+</body>
+</html>
