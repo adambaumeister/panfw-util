@@ -46,6 +46,10 @@ button {
     padding-right: 15px;
 }
 
+.main-link .hover-button {
+    text-align: left;
+}
+
 input {
     /* font-size: 16px; */
     /* font-size: 1.6rem; */
@@ -80,10 +84,12 @@ table.centered {
 }
 
 .main {
-    width: 70%;
     margin: auto;
     text-align: center;
     padding: 20px;
+    background-color: #829eb9;
+    padding: 30px;
+    border: 3px solid #94abaf;
 }
 
 .good-dot {
@@ -106,9 +112,8 @@ table.centered {
 
 .link {
     -webkit-appearance: none;
-    background-color: white;
     border: none;
-    padding: 0px;
+    padding: 10px;
     font-size: 20px;
     text-align: left;
 }
