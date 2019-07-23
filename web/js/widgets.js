@@ -12,9 +12,9 @@ class InputList {
     Add(value) {
         var html;
         if (value != null) {
-            html = `<input class="${this.className}" type="text" value="${value}">`;
+            html = `<div><input class="${this.className}" type="text" value="${value}"></div>`;
         } else {
-            html = `<input class="${this.className}" type="text">`;
+            html = `<div><input class="${this.className}" type="text"></div>`;
         }
 
         this.items.push(html)
@@ -22,6 +22,7 @@ class InputList {
 
     Render() {
         var html = this.items.join("")
+        html = html + "<button class='add-item'>+</bbutton>"
         return html;
     }
 

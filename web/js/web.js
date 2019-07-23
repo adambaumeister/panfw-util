@@ -48,26 +48,12 @@ class Main {
         $("#main").load('htmlsnippets/register.html', function() {
             var inputList = new InputList("list-widget");
             inputList.Add(null);
-            var html = inputList.Render()
-            $("#main").on('click', '#submit-register', function () {
-                // On click we retrieve all the values from the input list widget
-                var values = inputList.GetValues();
-                // We then push the tag as the final argument - this will be sent to the panutil API
-                values.push($("#tag").val());
-                var apikey = get('keyinfo');
-                var jsonform = {
-                    'ApiKey': apikey['ApiKey'],
-                    'Command': 'register',
-                    'args': values,
-                }
-                console.log(jsonform)
-                panutil.Register(jsonform).then(function (val) {
-                    $("#main").html(val['Message'])
-                }, function (err) {
-                    console.log(val)
-                });
-            });
+            var html = inputList.Render();
             $("#register-list").html(html);
+            $("#main").on('click', '.add-item', function () {
+                inputList.Add(null);
+                $("#register-list").html(inputList.Render());
+            })
         })
     }
 }
@@ -185,7 +171,35 @@ $(document).ready(function(){
 
     });
 
-    $("#main").on('click', '#register-link', function () {
-        main.DisplayRegister(panutil)
+    // Register all the on click events, DAMN there is going to be a fuckload of these.
+    var mainobj = $("#main")
+    mainobj.on('click', '#register-link', function () {
+        main.DisplayRegister(panutil);
+    });
+    mainobj.on('click', '#back-button', function () {
+        main.DisplayIndex();
+    });
+    mainobj.on('click', '#submit-register', function () {
+        SubmitRegister(panutil);
     });
 });
+
+function SubmitRegister(panutil) {
+    var inputList = new InputList("list-widget");
+    // On click we retrieve all the values from the input list widget
+    var values = inputList.GetValues();
+    // We then push the tag as the final argument - this will be sent to the panutil API
+    values.push($("#tag").val());
+    var apikey = get('keyinfo');
+    var jsonform = {
+        'ApiKey': apikey['ApiKey'],
+        'Command': 'register',
+        'args': values,
+    };
+    console.log(jsonform)
+    panutil.Register(jsonform).then(function (val) {
+        $("#main").html(val['Message'])
+    }, function (err) {
+        console.log(val)
+    });
+}
