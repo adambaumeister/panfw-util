@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"encoding/json"
 	"fmt"
+	"github.com/adambaumeister/panfw-util/panos/api/show"
 	"github.com/adambaumeister/panfw-util/panos/device"
 	"github.com/adambaumeister/panfw-util/panos/errors"
 	"io/ioutil"
@@ -25,6 +26,7 @@ func Start() {
 	http.HandleFunc("/loginstatus", a.LoginStatus)
 	http.HandleFunc("/join", a.Join)
 	http.HandleFunc("/register", a.Register)
+	http.HandleFunc("/showregistered", a.ShowRegistered)
 
 	log.Fatal(http.ListenAndServe("localhost:8080", nil))
 }
@@ -143,6 +145,26 @@ func (a *ApiHandler) Register(w http.ResponseWriter, r *http.Request) {
 		Message: result.Status,
 	}
 	j, _ := json.Marshal(sr)
+	w.Write(j)
+}
+
+func (a *ApiHandler) ShowRegistered(w http.ResponseWriter, r *http.Request) {
+	cr := Command{}
+	body, _ := ioutil.ReadAll(r.Body)
+	errors.LogDebug(string(body))
+	json.Unmarshal(body, &cr)
+
+	if !a.CheckLogin(cr.ApiKey) {
+		sr := StatusMessage{
+			Status:  1,
+			Message: "Not logged in.",
+		}
+		j, _ := json.Marshal(sr)
+		w.Write(j)
+		return
+	}
+	result := show.ShowRegisteredIPs(a.pandevice.GetHostname(), a.pandevice.GetApiKey())
+	j, _ := json.Marshal(result)
 	w.Write(j)
 }
 

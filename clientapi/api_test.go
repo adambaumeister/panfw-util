@@ -40,4 +40,11 @@ func TestApiHandler_Register(t *testing.T) {
 	}
 	body, _ = ioutil.ReadAll(resp.Body)
 	fmt.Printf(string(body))
+
+	resp, err = http.Post("http://127.0.0.1:8080"+"/showregistered", "application/json", bytes.NewBuffer(j))
+	if err != nil {
+		panic(err)
+	}
+	body, _ = ioutil.ReadAll(resp.Body)
+	fmt.Printf(string(body))
 }

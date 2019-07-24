@@ -5,6 +5,7 @@ import (
 	"github.com/adambaumeister/panfw-util/panos/device"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"os"
 )
 
 var addCmd = &cobra.Command{
@@ -30,6 +31,9 @@ var registerCmd = &cobra.Command{
 		username = PromptIfNil("user", false)
 
 		fw := device.ConnectUniversal(username, password, hostname)
+		if fw == nil {
+			os.Exit(1)
+		}
 		fw.SetDeviceGroup(devicegroup)
 		r := fw.Register(args)
 		fmt.Printf("Result: %v\n", r.Status)
