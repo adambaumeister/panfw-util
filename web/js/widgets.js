@@ -1,3 +1,35 @@
+class LogBox {
+    constructor(id) {
+        this.id = id;
+        this.logs = $(this.id);
+    }
+
+    OpenWithFill(contents) {
+        console.log("We got called to open")
+        var logs = this.logs;
+        logs.css('height', '30px');
+        logs.css('padding-top', '20px');
+        logs.css('padding-bottom', '20px');
+        logs.on('transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd',
+            function() {
+                $(this).html(contents)
+            });
+
+    }
+    Close() {
+        var logs = this.logs;
+        logs.html("");
+        logs.css('height', '0px');
+        logs.css('padding-top', '0px');
+        logs.css('padding-bottom', '0px');
+        // This clears the previously registered thing
+        logs.on('transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd',
+            function() {
+                $(this).html("");
+            });
+    }
+}
+
 
 class InputList {
     /*
@@ -35,4 +67,7 @@ class InputList {
     }
 }
 
-module.exports = InputList;
+module.exports = {
+    InputList,
+    LogBox
+};

@@ -7,7 +7,7 @@ const url = "http://localhost:8080";
 const storage = require('electron-json-storage');
 const Store = require('electron-store');
 const Panutil = require('./js/api');
-const InputList = require('./js/widgets');
+const {InputList, LogBox} = require('./js/widgets');
 const storebasic = new Store()
 
 class Main {
@@ -19,21 +19,15 @@ class Main {
     SetLoginStatus(status) {
         // Update the status of the device connection.
         var statusVal = status['Status'];
+        var logbox = new LogBox("#logs")
         if (statusVal === 0) {
             $("#dstatus").replaceWith(`<span id="dstatus" class="good-dot"></span>`);
             this.DisplayIndex();
             store("keyinfo", status)
+            logbox.Close();
         } else if (statusVal === 1){
             $("#dstatus").replaceWith(`<span id="dstatus" class="bad-dot"></span>`);
-            var logs = $("#logs")
-            logs.css('height', '30px');
-            logs.css('padding-top', '20px');
-            logs.css('padding-bottom', '20px');
-            logs.on('transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd',
-                function() {
-                    $(this).html("Connection failed: bad password.")
-                });
-
+            logbox.OpenWithFill("Connection failed: bad password.");
         }
     }
 
@@ -177,6 +171,8 @@ $(document).ready(function(){
         main.DisplayRegister(panutil);
     });
     mainobj.on('click', '#back-button', function () {
+        var logbox = new LogBox("#logs");
+        logbox.Close();
         main.DisplayIndex();
     });
     mainobj.on('click', '#submit-register', function () {
@@ -185,6 +181,7 @@ $(document).ready(function(){
 });
 
 function SubmitRegister(panutil) {
+    var logbox = new LogBox("#logs");
     var inputList = new InputList("list-widget");
     // On click we retrieve all the values from the input list widget
     var values = inputList.GetValues();
@@ -198,7 +195,7 @@ function SubmitRegister(panutil) {
     };
     console.log(jsonform)
     panutil.Register(jsonform).then(function (val) {
-        $("#main").html(val['Message'])
+        logbox.OpenWithFill(val['Message']);
     }, function (err) {
         console.log(val)
     });

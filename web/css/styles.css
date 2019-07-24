@@ -58,10 +58,9 @@ input {
 }
 
 .text-scroller {
-    transition: height 1s ease-in-out, padding 1s ease-in-out;
+    transition: height .3s ease-in-out, padding .3s ease-in-out;
     height: 0px;
     background-color: white;
-    width: 50%;
     margin: auto;
     text-align: center;
 }
