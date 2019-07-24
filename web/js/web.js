@@ -7,7 +7,7 @@ const url = "http://localhost:8080";
 const storage = require('electron-json-storage');
 const Store = require('electron-store');
 const Panutil = require('./js/api');
-const {InputList, LogBox} = require('./js/widgets');
+const {InputList, LogBox, ExpandTable} = require('./js/widgets');
 const storebasic = new Store()
 
 class Main {
@@ -36,6 +36,7 @@ class Main {
     }
 
     DisplayRegister(panutil) {
+        GetRegistered(panutil);
         /*
         This function displays the "register" submenu
          */
@@ -196,6 +197,23 @@ function SubmitRegister(panutil) {
     console.log(jsonform)
     panutil.Register(jsonform).then(function (val) {
         logbox.OpenWithFill(val['Message']);
+    }, function (err) {
+        console.log(val)
+    });
+}
+
+function GetRegistered(panutil) {
+    var logbox = new LogBox("#logs");
+
+    var apikey = get('keyinfo');
+    var jsonform = {
+        'ApiKey': apikey['ApiKey'],
+        'Command': 'showregistered',
+    };
+    console.log(jsonform)
+    panutil.GetRegistered(jsonform).then(function (val) {
+        var expandTable = new ExpandTable("tag-table");
+        logbox.OpenWithFill(expandTable.DrawFromList(val.GetTags()));
     }, function (err) {
         console.log(val)
     });

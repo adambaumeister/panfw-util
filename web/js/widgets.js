@@ -67,7 +67,24 @@ class InputList {
     }
 }
 
+class ExpandTable {
+    constructor(id) {
+        this.id = id;
+    }
+
+    DrawFromList(list) {
+        var html = "";
+        $.each(list, function (index, element) {
+            console.log(element)
+            html = html + `<div class='tag'>${index}</div>`
+        });
+        return html;
+    }
+
+}
+
 module.exports = {
     InputList,
-    LogBox
+    LogBox,
+    ExpandTable
 };
