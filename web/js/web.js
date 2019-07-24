@@ -213,7 +213,7 @@ function GetRegistered(panutil) {
     console.log(jsonform)
     panutil.GetRegistered(jsonform).then(function (val) {
         var expandTable = new ExpandTable("tag-table");
-        logbox.OpenWithFill(expandTable.DrawFromList(val.GetTags()));
+        expandTable.DrawFromList(val.GetTags());
     }, function (err) {
         console.log(val)
     });

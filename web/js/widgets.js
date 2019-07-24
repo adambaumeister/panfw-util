@@ -1,4 +1,8 @@
 class LogBox {
+    /*
+    A white box that will expand, contract, and fill with data.
+    Useful for transitory information.
+     */
     constructor(id) {
         this.id = id;
         this.logs = $(this.id);
@@ -68,16 +72,22 @@ class InputList {
 }
 
 class ExpandTable {
+    /*
+    Simple, one row "table" where each option can be clicked to expand to additional values.
+     */
     constructor(id) {
         this.id = id;
+        this.limit = 10;
     }
 
     DrawFromList(list) {
         var html = "";
         $.each(list, function (index, element) {
             console.log(element)
-            html = html + `<div class='tag'>${index}</div>`
+            var ipHtml = element.join("<br>")
+            html = html + `<div class='tag'>${index}<div id="${index}-tag">${ipHtml}</div></div>`
         });
+        $("#"+this.id).html(html);
         return html;
     }
 
