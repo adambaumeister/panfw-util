@@ -82,10 +82,19 @@ class ExpandTable {
 
     DrawFromList(list) {
         var html = "";
+        var mainobj = $("#main");
+        var totalips = 0;
         $.each(list, function (index, element) {
-            console.log(element)
+            var ipcount = element.length;
+            totalips = totalips + ipcount;
+        });
+
+        $.each(list, function (index, element) {
+            var ipcount = element.length;
+            var divwidth = ipcount/totalips *100;
+
             var ipHtml = element.join("<br>")
-            html = html + `<div class='tag'>${index}<div id="${index}-tag">${ipHtml}</div></div>`
+            html = html + `<div id="${index}-tagname" class='tag' style="width:${divwidth}%">${index}</div>`
         });
         $("#"+this.id).html(html);
         return html;
